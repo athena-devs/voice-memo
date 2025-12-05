@@ -6,7 +6,7 @@ export class UserController {
     private data = new VerifyData()
     private factory = new UserFactory()
     
-    async createUser(request: Request, response: Response) {
+    createUser = async (request: Request, response: Response) => {
         const createUser = this.factory.makeUsersCreateUseCase()
         const parsedUser = this.data.verify_user(request.body)
         const user = await createUser.execute(parsedUser)
@@ -14,15 +14,15 @@ export class UserController {
         return response.status(201).send(user)
     }
 
-    async getUser(request: Request, response: Response) {
+    getUser = async (request: Request, response: Response) => {
         const getUser = this.factory.makeUsersGetUseCase()
         const { id } = this.data.verify_id(request.params.id)
-        const user = await getUser.execute(id)
+        const user = await getUser.execute(request.params.id)
         
         return response.status(200).send(user)
     }
 
-    async updateUser(request: Request, response: Response) {
+    updateUser = async (request: Request, response: Response) => {
         const updateUser = this.factory.makeUsersUpdateUseCase()
         const parsedUser = this.data.verify_user(request.body)
         const { id } = this.data.verify_id(request.params.id)
@@ -31,7 +31,7 @@ export class UserController {
         return response.status(200).send(user)
     }
 
-    async deleteUser(request: Request, response: Response) {
+    deleteUser = async (request: Request, response: Response) => {
         const deleteUser = this.factory.makeUsersDeleteUseCase()
         const { id } = this.data.verify_id(request.params.id)
 
