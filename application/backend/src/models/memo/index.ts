@@ -1,6 +1,7 @@
 export interface IMemo {
-    title?: string
-    summary?: string
+    title: string | null
+    summary: string | null
     text: string
     path: string
+    
 }
