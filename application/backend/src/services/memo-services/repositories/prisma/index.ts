@@ -10,7 +10,7 @@ export class PrismaMemosRepository implements MemosRepository {
                 text: data.text,
                 title: data.title,
                 summary: data.summary,
-                userId: "12256587"
+                userId: "12345"
             }
         })
 

@@ -6,7 +6,7 @@ export class MemoController {
     private data = new VerifyData()
     private factory = new MemoFactories()
 
-    async createMemo(request: Request, response: Response) {
+    createMemo = async (request: Request, response: Response) => {
         const createMemo = this.factory.makeMemosCreateUseCase()
         const parsedMemo = this.data.verify_memo(request.body)
         const memo = await createMemo.execute(parsedMemo)
@@ -14,7 +14,7 @@ export class MemoController {
         return response.status(201).send(memo)
     }
 
-    async getMemo(request: Request, response: Response) {
+    getMemo = async (request: Request, response: Response) => {
         const getMemo = this.factory.makeMemosGetUseCase()
         const { id } = this.data.verify_id(request.params.id)
         const memo = await getMemo.execute(id)
@@ -22,7 +22,7 @@ export class MemoController {
         return response.status(200).send(memo)
     }
 
-    async updateMemo(request: Request, response: Response) {
+    updateMemo = async (request: Request, response: Response) => {
         const updateMemo = this.factory.makeMemosUpdateUseCase()
         const parsedMemo = this.data.verify_memo(request.body)
         const { id } = this.data.verify_id(request.params.id)
@@ -31,7 +31,7 @@ export class MemoController {
         return response.status(200).send(memo)
     }
 
-    async deleteMemo(request: Request, response: Response) {
+    deleteMemo = async (request: Request, response: Response) => {
         const deleteMemo = this.factory.makeMemosDeleteUseCase()
         const { id } = this.data.verify_id(request.params.id)
 

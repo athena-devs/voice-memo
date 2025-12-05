@@ -4,6 +4,7 @@ import { IResponseFmt, responseFormat } from "@shared/response-format";
 
 export class UsersGetUseCase {
     constructor(private usersRepository: UsersRepository) {
+        console.log("Here")
         this.usersRepository = usersRepository
     }
   
