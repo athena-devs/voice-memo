@@ -1,0 +1,25 @@
+{
+    "compilerOptions": {
+      "module": "ESNext",
+      "target": "ESNext",
+      "moduleResolution": "node",
+      "esModuleInterop": true,
+      "skipLibCheck": true,
+      "strict": true,
+      "rootDir": "./src",
+      "outDir": "./dist",
+      "baseUrl": "src",
+      "paths": {
+        "@config/*": ["config/*"],
+        "@shared/*": ["shared/*"],
+        "@models/*": ["models/*"],
+        "@services/*": ["services/*"],
+        "@controllers/*": ["controllers/*"],
+        "@middlewares/*": ["middlewares/*"],
+        "@routes/*": ["routes/*"]
+      }
+
+    },
+    "include": ["src/**/*"],
+    "exclude": ["node_modules"]
+  }
