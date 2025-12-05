@@ -9,7 +9,8 @@ export class PrismaMemosRepository implements MemosRepository {
                 path: data.path,
                 text: data.text,
                 title: data.title,
-                summary: data.summary
+                summary: data.summary,
+                userId: "12256587"
             }
         })
 
