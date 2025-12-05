@@ -1,0 +1,1 @@
+ Voice memo is an application intended to be a notepad that listen you and summarize your daily notes 
