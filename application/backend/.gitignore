@@ -1,0 +1,4 @@
+node_modules
+.tool-versions
+.env
+database.db
