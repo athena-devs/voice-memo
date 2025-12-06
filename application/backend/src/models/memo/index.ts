@@ -3,5 +3,11 @@ export interface IMemo {
     summary: string | null
     text: string
     path: string
-    
+    userId: string
+}
+
+export interface ICreateMemoInput {
+    filePath: string;
+    userId: string;
+    mimetype: string;
 }

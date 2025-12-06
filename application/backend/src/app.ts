@@ -1,5 +1,5 @@
 import { env } from '@shared/env'
-import express, { Request, Response } from 'express'
+import express from 'express'
 import { appRouter } from './routes/index'
 
 const app = express()

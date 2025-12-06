@@ -1,17 +1,31 @@
 import { VerifyData } from "@shared/zod";
 import { Request, Response } from "express";
 import { MemoFactories } from "@services/memo-services/use-cases/factories";
+import { AppError } from "@shared/app-error";
 
 export class MemoController {
     private data = new VerifyData()
     private factory = new MemoFactories()
 
     createMemo = async (request: Request, response: Response) => {
-        const createMemo = this.factory.makeMemosCreateUseCase()
-        const parsedMemo = this.data.verify_memo(request.body)
-        const memo = await createMemo.execute(parsedMemo)
+        const userId = "123e4567-e89b-12d3-a456-426614174000"
+        const { file } = request
+        const mime = "audio/webm"
 
-        return response.status(201).send(memo)
+        if (file) {
+            const createMemo = this.factory.makeMemosCreateUseCase()
+            const parsedMemo = this.data.verify_file(file)
+            const { id } = this.data.verify_id(userId)
+            const memo = await createMemo.execute({
+                filePath: parsedMemo.path,
+                userId: id,
+                mimetype: mime
+            })
+         
+            return response.status(201).send(memo)
+        }else {
+            return new AppError("No audio file provided", 404)
+        }
     }
 
     getMemo = async (request: Request, response: Response) => {
