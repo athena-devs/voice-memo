@@ -19,14 +19,40 @@ export class VerifyData {
             path: z.string().max(50),
             text: z.string().max(200),
             summary: z.string().max(200),
+            userId: z.uuid()
         });
 
         return schema.parse(memo);
     }
 
+    
+    verify_file(file: Express.Multer.File) {
+        const MAX_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
+        
+        const ALLOWED_MIMES = [
+            'audio/mpeg',
+            'audio/mp4',
+            'audio/ogg',
+            'audio/aac', 
+            'audio/x-m4a',
+            'audio/webm'
+        ];
+        
+        const fileSchema = z.object({
+            originalname: z.string(),
+            mimetype: z.string().refine((mime) => ALLOWED_MIMES.includes(mime), {
+                message: "Invalid file type. Allowed: mp3, m4a, ogg, aac",
+            }),
+            size: z.number().max(MAX_SIZE_BYTES, "File size must be less than 5MB"),
+            path: z.string(),
+        });
+
+        return fileSchema.parse(file);
+    }
+
     verify_id(id: string) {
         const schema = z.object({
-            id: z.string().uuid()
+            id: z.uuid()
         });
 
         return schema.parse({ id });

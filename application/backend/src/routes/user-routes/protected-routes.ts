@@ -5,6 +5,7 @@ import { Router } from "express";
 const user = new UserController()
 
 export const userRoutes = Router()
+.post('/', tryCatch(user.createUser))
 .get('/:id', tryCatch(user.getUser))
 .patch('/:id', tryCatch(user.updateUser))
 .delete('/:id', tryCatch(user.deleteUser))

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste VoiceMemo</title>
+    <style>
+        body { font-family: sans-serif; padding: 2rem; max-width: 600px; margin: 0 auto; background: #f4f4f9; }
+        .container { background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        button { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 1rem; margin-right: 10px; }
+        #btnRec { background-color: #e74c3c; color: white; }
+        #btnStop { background-color: #34495e; color: white; }
+        #btnRec:disabled, #btnStop:disabled { background-color: #bdc3c7; cursor: not-allowed; }
+        #status { margin-top: 1rem; font-weight: bold; }
+        pre { background: #eee; padding: 1rem; border-radius: 5px; overflow-x: auto; white-space: pre-wrap;}
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🎙️ Teste de Upload</h1>
+    <p>Grave um áudio para testar a integração com a Groq.</p>
+
+    <div>
+        <button id="btnRec">🔴 Gravar</button>
+        <button id="btnStop" disabled>⏹️ Parar & Enviar</button>
+    </div>
+
+    <div id="status">Aguardando...</div>
+
+    <h3>Resposta do Backend:</h3>
+    <pre id="output">...</pre>
+</div>
+
+<script>
+    let mediaRecorder;
+    let audioChunks = [];
+    
+    const btnRec = document.getElementById('btnRec');
+    const btnStop = document.getElementById('btnStop');
+    const status = document.getElementById('status');
+    const output = document.getElementById('output');
+
+    // AJUSTE AQUI SE SUA PORTA FOR DIFERENTE
+    const API_URL = 'http://localhost:3333/memos'; 
+
+    btnRec.onclick = async () => {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            
+            // Tenta usar OGG ou WEBM (Navegadores suportam melhor)
+            const options = { mimeType: 'audio/webm' }; 
+            mediaRecorder = new MediaRecorder(stream, options);
+
+            mediaRecorder.start();
+            audioChunks = [];
+
+            mediaRecorder.ondataavailable = event => {
+                audioChunks.push(event.data);
+            };
+
+            mediaRecorder.onstop = async () => {
+                status.innerText = "Processando upload...";
+                
+                // Cria o Blob do áudio
+                const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                
+                // Prepara o formulário
+                const formData = new FormData();
+                // ATENÇÃO: O nome 'audio' aqui deve bater com upload.single('audio') no backend
+                // O nome do arquivo 'teste.webm' é importante para o Zod validar a extensão se ele checar nome
+                formData.append('audio', audioBlob, 'recording.webm'); 
+                
+                // (Opcional) Se precisar de userId no form-data
+                formData.append('userId', '12345');
+
+                try {
+                    const response = await fetch(API_URL, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const result = await response.json();
+                    
+                    if (response.ok) {
+                        status.innerText = "✅ Sucesso!";
+                        status.style.color = "green";
+                    } else {
+                        status.innerText = "❌ Erro no Backend";
+                        status.style.color = "red";
+                    }
+
+                    output.innerText = JSON.stringify(result, null, 2);
+
+                } catch (error) {
+                    status.innerText = "❌ Erro de Conexão";
+                    output.innerText = error.toString();
+                }
+            };
+
+            btnRec.disabled = true;
+            btnStop.disabled = false;
+            status.innerText = "Gravando... (Fale algo)";
+            status.style.color = "red";
+
+        } catch (err) {
+            console.error(err);
+            status.innerText = "Erro ao acessar microfone: " + err.message;
+        }
+    };
+
+    btnStop.onclick = () => {
+        mediaRecorder.stop();
+        btnRec.disabled = false;
+        btnStop.disabled = true;
+    };
+</script>
+
+</body>
+</html>
