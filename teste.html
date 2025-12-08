@@ -41,14 +41,12 @@
     const status = document.getElementById('status');
     const output = document.getElementById('output');
 
-    // AJUSTE AQUI SE SUA PORTA FOR DIFERENTE
-    const API_URL = 'http://localhost:3333/memos'; 
+    const API_URL = 'http://localhost:8000/memos'; 
 
     btnRec.onclick = async () => {
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
             
-            // Tenta usar OGG ou WEBM (Navegadores suportam melhor)
             const options = { mimeType: 'audio/webm' }; 
             mediaRecorder = new MediaRecorder(stream, options);
 
@@ -62,18 +60,11 @@
             mediaRecorder.onstop = async () => {
                 status.innerText = "Processando upload...";
                 
-                // Cria o Blob do áudio
                 const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
                 
-                // Prepara o formulário
                 const formData = new FormData();
-                // ATENÇÃO: O nome 'audio' aqui deve bater com upload.single('audio') no backend
-                // O nome do arquivo 'teste.webm' é importante para o Zod validar a extensão se ele checar nome
                 formData.append('audio', audioBlob, 'recording.webm'); 
                 
-                // (Opcional) Se precisar de userId no form-data
-                formData.append('userId', '12345');
-
                 try {
                     const response = await fetch(API_URL, {
                         method: 'POST',

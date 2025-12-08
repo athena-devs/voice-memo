@@ -1,26 +1,35 @@
 {
-  "name": "projeto-athena-locator",
+  "name": "voice-memo",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "dev": "tsx watch --inspect src/app.ts "
+  "type": "module",
+  "main": "./dist/app.js",
+  "exports": {
+    ".": {
+      "types": "./dist/app.d.ts",
+      "import": "./dist/app.js"
+    }
   },
-  "author": "",
-  "license": "ISC",
+  "scripts": {
+    "dev": "tsx watch --inspect src/app.ts",
+    "build": "pkgroll"
+  },
+  "author": "Saymon Macedo",
+  "license": "MIT",
   "dependencies": {
     "@prisma/client": "^6.7.0",
     "@types/multer": "^2.0.0",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "groq-sdk": "^0.37.0",
+    "minio": "^8.0.6",
     "multer": "^2.0.2",
     "prisma": "^6.7.0",
-    "tsx": "^4.19.4",
     "typescript": "^5.8.3",
     "zod": "^4.1.13"
   },
   "devDependencies": {
+    "pkgroll": "^2.21.4",
+    "tsx": "^4.19.4",
     "@types/express": "^5.0.1",
     "@types/node": "^22.15.15"
   }

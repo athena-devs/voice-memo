@@ -40,9 +40,10 @@ export class MemosCreateUseCase {
             })
 
             // Unlink
-            fs.unlinkSync(filePath)
-            fs.unlinkSync(streamPath);
-            
+            if (fs.existsSync(streamPath) && fs.existsSync(filePath)) {
+                fs.unlinkSync(filePath)
+                fs.unlinkSync(streamPath);
+            }
             return memo
 
         } catch (err: any) {
