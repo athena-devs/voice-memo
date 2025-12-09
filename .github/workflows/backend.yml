@@ -60,13 +60,8 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
 
       - name: Deploy through SSH Pipe 
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ env.SSH_HOST }}
-          username: ${{ env.SSH_USER }}
-          key: ${{ env.SSH_PRIVATE_KEY }}
-          script:
-            export IMAGE_NAME=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+        run: |
+          export IMAGE_NAME=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           
-            envsubst < ${{ env.WORKDIR }}/docker-compose.yml | ssh ${{ env.SSH_USER }}@${{ env.SSH_HOST }} \
-            "docker compose -f - up -d --no-build --remove-orphans"          
+          envsubst < ${{ env.WORKDIR }}/docker-compose.yml | ssh ${{ env.SSH_USER }}@${{ env.SSH_HOST }} \
+          "docker compose -f - up -d --no-build --remove-orphans"
