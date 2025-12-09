@@ -68,5 +68,5 @@ jobs:
         run: |
           export IMAGE_NAME=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           
-          envsubst < docker-compose.yml | ssh ${{ env.SSH_USER }}@${{ env.SSH_HOST }} \
+          envsubst < ${{ env.WORKDIR }}/docker-compose.yml | ssh ${{ env.SSH_USER }}@${{ env.SSH_HOST }} \
           "docker compose -f - up -d --no-build --remove-orphans"
