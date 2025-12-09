@@ -32,11 +32,7 @@ jobs:
     steps:
       - name: Code Checkout
         uses: actions/checkout@v6.0.1
-        with:
-          ssh-key: env.SSH_PRIVATE_KEY
-          ssh-strict: env.SSH_HOST
-          ssh-user: env.SSH_USER
-
+        
       - name: Set Version based on (SHA)
         run: echo "VERSION=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
