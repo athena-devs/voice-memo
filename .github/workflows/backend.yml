@@ -27,7 +27,7 @@ jobs:
       DB_HOST: ${{ secrets.DB_HOST }}
       DB_PORT: ${{ secrets.DB_PORT }}
       DATABASE_PATH: ${{ secrets.DATABASE_PATH }}
-      GH_TOKEN: ${{ secrets.GH_TOKEN }} 
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
 
     steps:
       - name: Code Checkout
