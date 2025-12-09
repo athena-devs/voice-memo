@@ -1,27 +1,31 @@
-FROM node:23.11.0-alpine AS build
+FROM node:24.11.1-bookworm-slim AS build
 
 WORKDIR /build
 
-COPY package.json ./
-COPY package-lock.json ./
+COPY package.json package-lock.json ./
+
 RUN npm ci
 
-COPY . .
-RUN npm run build
-
-FROM node:23.11.0-alpine
-
-WORKDIR /app
-
-COPY package.json ./
-COPY package-lock.json ./
-RUN npm ci --omit=dev
-
-COPY --from=build /build/dist/ ./dist
-COPY --from=build /build/prisma ./prisma
+COPY prisma ./prisma
 
 RUN npx prisma generate
 
+COPY . .
+
+RUN npm run build
+
+RUN npm ci --omit=dev && npm cache clean --force
+
+
+FROM gcr.io/distroless/nodejs24-debian12
+
+WORKDIR /app
+
+COPY --from=build /build/node_modules ./node_modules
+COPY --from=build /build/dist ./dist
+COPY --from=build /build/prisma ./prisma
+COPY --from=build /build/package.json ./package.json
+
 EXPOSE $PORT
 
-CMD [ "node", "dist/app.js" ]
+CMD [ "dist/app.js" ]
