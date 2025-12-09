@@ -1,0 +1,33 @@
+volumes:
+  database-data:
+    driver: local
+networks:
+  node-app:
+services:
+  db:
+    image: hibitdev/sqlite:latest
+    restart: always
+    container_name: ${DB_IMAGE_NAME}
+    hostname: ${DB_HOST}
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+    networks:
+      - node-app
+    volumes:
+      - database-data:${DATABASE_PATH}
+    labels:
+      - docker-volume-backup.stop-during-backup=true # Important for backup
+    command: ["tail", "-f", "/dev/null"]
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${IMAGE_NAME}:${VERSION}
+    container_name: ${IMAGE_NAME}
+    depends_on:
+      - db
+    ports:
+      - ${APP_PORT}:${APP_PORT}
+    networks:
+      - node-app
+    restart: always

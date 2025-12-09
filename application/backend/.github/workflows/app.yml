@@ -1,0 +1,64 @@
+name: Deploy Voice Memo
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    env:
+      RESGISTRY: ghcr.io
+      IMAGE_NAME: ${{ github.repository }}
+      APP_PORT: ${{ secrets.APP_PORT }}
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+      SSH_USER: ${{ secrets.SSH_USER }}
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      DB_IMAGE_NAME: ${{ secrets.DB_IMAGE_NAME }}
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_PORT: ${{ secrets.DB_PORT }}
+      DATABASE_PATH: ${{ secrets.DATABASE_PATH }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+      VERSION: ${{ github.sha::0:5 }}
+
+    steps:
+      - name: Code Checkout
+        uses: actions/checkout@v6
+        with:
+          ssh-key: env.SSH_PRIVATE_KEY
+          ssh-known-hosts: env.SSH_HOST
+          ssh-strict: env.SSH_HOST
+          ssh-user: env.SSH_USER
+      
+      - name: Check SSH Key
+        run: ssh-keyscan -H env.SSH_HOST >> ~/ssh/ssh-known-hosts
+
+      - name: Login on GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ env.GH_TOKEN }}
+
+      - name: Build and Push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+
+      - name: Deploy through SSH Pipe 
+        env:
+          FULL_IMAGE_NAME: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+        run: |
+          export IMAGE_NAME=$FULL_IMAGE_NAME
+          
+          envsubst < docker-compose.yml | ssh ${{ env.SSH_USER }}@${{ env.SSH_HOST }} \
+          "docker compose -f - up -d --no-build --remove-orphans"
