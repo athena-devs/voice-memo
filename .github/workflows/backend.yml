@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - "application/backend/**"
-      - ".github/workflows/app.yml"
+      - ".github/workflows/backend.yml"
 
 jobs:
   deploy:
@@ -32,7 +32,7 @@ jobs:
     steps:
       - name: Code Checkout
         uses: actions/checkout@v6.0.1
-        
+
       - name: Set Version based on (SHA)
         run: echo "VERSION=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
