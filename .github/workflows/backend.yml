@@ -34,7 +34,6 @@ jobs:
         uses: actions/checkout@v6.0.1
         with:
           ssh-key: env.SSH_PRIVATE_KEY
-          ssh-known-hosts: env.SSH_HOST
           ssh-strict: env.SSH_HOST
           ssh-user: env.SSH_USER
 
