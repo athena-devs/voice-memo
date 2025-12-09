@@ -24,19 +24,25 @@ jobs:
       DB_PORT: ${{ secrets.DB_PORT }}
       DATABASE_PATH: ${{ secrets.DATABASE_PATH }}
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
-      VERSION: ${{ github.sha::0:5 }}
 
     steps:
       - name: Code Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v6.0.1
         with:
           ssh-key: env.SSH_PRIVATE_KEY
           ssh-known-hosts: env.SSH_HOST
           ssh-strict: env.SSH_HOST
           ssh-user: env.SSH_USER
-      
-      - name: Check SSH Key
-        run: ssh-keyscan -H env.SSH_HOST >> ~/ssh/ssh-known-hosts
+
+      - name: Set Version based on (SHA)
+        run: echo "VERSION=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      - name: Set SSH Key
+        run: |
+          mkdir -p ~/.ssh/
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
       - name: Login on GitHub Container Registry
         uses: docker/login-action@v3
@@ -46,7 +52,7 @@ jobs:
           password: ${{ env.GH_TOKEN }}
 
       - name: Build and Push
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           push: true
@@ -55,10 +61,8 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
 
       - name: Deploy through SSH Pipe 
-        env:
-          FULL_IMAGE_NAME: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
         run: |
-          export IMAGE_NAME=$FULL_IMAGE_NAME
+          export IMAGE_NAME=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           
           envsubst < docker-compose.yml | ssh ${{ env.SSH_USER }}@${{ env.SSH_HOST }} \
           "docker compose -f - up -d --no-build --remove-orphans"
