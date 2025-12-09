@@ -17,7 +17,7 @@ jobs:
 
     env:
       WORKDIR: ./application/backend
-      RESGISTRY: ghcr.io
+      REGISTRY: ghcr.io
       IMAGE_NAME: ${{ github.repository }}
       APP_PORT: ${{ secrets.APP_PORT }}
       SSH_HOST: ${{ secrets.SSH_HOST }}
