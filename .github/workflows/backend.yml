@@ -71,7 +71,7 @@ jobs:
           "docker compose -f - up -d --no-build --remove-orphans"
 
       - name: Clean old images
-        uses: snok/container-retention-policy@v3
+        uses: snok/container-retention-policy@v3.0.1
         with:
           image-names: voice-memo
           cut-off: 5 minutes ago-
