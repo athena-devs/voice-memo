@@ -23,7 +23,7 @@ services:
       context: .
       dockerfile: Dockerfile
     image: ${IMAGE_NAME}:${VERSION}
-    container_name: ${IMAGE_NAME}
+    container_name: voice-memo
     depends_on:
       - db
     ports:
