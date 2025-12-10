@@ -63,5 +63,18 @@ jobs:
         run: |
           export IMAGE_NAME=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           
+          # Docker and VPS login
+          echo "${{ env.GH_TOKEN }}" | ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ env.SSH_USER }}@${{ env.SSH_HOST }} \
+          "docker login ghcr.io -u ${{ github.actor }} --password-stdin"
+          
           envsubst < ${{ env.WORKDIR }}/docker-compose.yml | ssh ${{ env.SSH_USER }}@${{ env.SSH_HOST }} \
           "docker compose -f - up -d --no-build --remove-orphans"
+
+      - name: Clean old images
+        uses: snok/container-retention-policy@v3
+        with:
+          image-names: voice-memo
+          cut-off: 5 minutes ago-
+          keep-at-least: 2
+          account: athena-devs
+          token: ${{ secrets.GITHUB_TOKEN }}
