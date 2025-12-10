@@ -74,7 +74,7 @@ jobs:
         uses: snok/container-retention-policy@v3.0.1
         with:
           image-names: voice-memo
-          cut-off: 5 minutes ago-
+          cut-off: 5m
           keep-at-least: 2
           account: athena-devs
           token: ${{ secrets.GITHUB_TOKEN }}
