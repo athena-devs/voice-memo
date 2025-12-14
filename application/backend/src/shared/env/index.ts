@@ -6,6 +6,10 @@ const envSchema = z.object({
     PORT: z.coerce.number().default(3333),
     DATABASE_URL: z.string().default(""),
     API_KEY: z.string().default(""),
+    MINIO_HOST: z.string().default(""),
+    MINIO_PORT: z.coerce.number().default(9000),
+    MINIO_ACESS_KEY: z.string().default(""),
+    MINIO_SECRET_KEY: z.string().default("")
 })
 
 const _env = envSchema.safeParse(process.env)
