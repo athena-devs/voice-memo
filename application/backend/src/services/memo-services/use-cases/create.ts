@@ -32,24 +32,24 @@ export class MemosCreateUseCase {
                 language: "pt"
             })
             
+            // Save on storage
+            const storage = await minio.upload({
+                filePath: streamPath,
+                mimetype: mime,
+                userId: input.userId
+            })
+            
+            // Clean after save on minio
+            fs.delete(filePath, streamPath)
+
             // Create Memo
             const memo = await this.memosRepository.createMemo({
-                path: input.filePath,
+                path: storage.data.dest,
                 summary: "",
                 text: transcripiton.text,
                 title: transcripiton.text.substring(0, 50) + "...",
                 userId: input.userId
-            })
-
-            // Save on storage
-            await minio.upload({
-                filePath: input.filePath,
-                mimetype: mime,
-                userId: input.userId
             }) 
-
-            // Unlink
-            fs.delete(filePath, streamPath)
 
             return memo
 

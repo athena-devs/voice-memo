@@ -8,7 +8,7 @@ const envSchema = z.object({
     API_KEY: z.string().default(""),
     MINIO_HOST: z.string().default(""),
     MINIO_PORT: z.coerce.number().default(9000),
-    MINIO_ACESS_KEY: z.string().default(""),
+    MINIO_ACCESS_KEY: z.string().default(""),
     MINIO_SECRET_KEY: z.string().default("")
 })
 
