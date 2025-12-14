@@ -2,9 +2,10 @@ import { IMemo, ICreateMemoInput } from "@models/memo";
 import { MemosRepository } from "../repositories";
 import { Groq } from "groq-sdk";
 import { env } from "@shared/env";
-import fs from "fs";
 import { MIME_TO_EXT } from "@shared/convert-extension";
 import { AppError } from "@shared/app-error";
+import { FsClient } from "@config/fs-client";
+import { MinioClient } from "@config/minio";
 
 export class MemosCreateUseCase {
     constructor(private memosRepository: MemosRepository) {
@@ -16,11 +17,12 @@ export class MemosCreateUseCase {
         const filePath = input.filePath
         const mime = MIME_TO_EXT[input.mimetype]
         const streamPath = `${filePath}.${mime}`
+        const minio = new MinioClient() 
+        const fs = new FsClient()
 
         try {
-            
-            fs.renameSync(filePath, streamPath)
-            const fileStream = fs.createReadStream(streamPath)
+            fs.rename(filePath, streamPath)
+            const fileStream = fs.create(streamPath)
 
             // Transcription
             const transcripiton = await groq.audio.transcriptions.create({
@@ -39,20 +41,21 @@ export class MemosCreateUseCase {
                 userId: input.userId
             })
 
+            // Save on storage
+            await minio.upload({
+                filePath: input.filePath,
+                mimetype: mime,
+                userId: input.userId
+            }) 
+
             // Unlink
-            if (fs.existsSync(streamPath) && fs.existsSync(filePath)) {
-                fs.unlinkSync(filePath)
-                fs.unlinkSync(streamPath);
-            }
+            fs.delete(filePath, streamPath)
+
             return memo
 
         } catch (err: any) {
-            if (fs.existsSync(streamPath)) fs.unlinkSync(streamPath);
-            if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-
-            err = new AppError("Internal Server Error", 500)
-            console.log("Here: ", err)
-            return err
+            fs.delete(filePath, streamPath)
+            throw new AppError(`Internal Server Error: ${err}`, 500)
         }
     }
 }
