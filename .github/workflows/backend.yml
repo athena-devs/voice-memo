@@ -27,7 +27,11 @@ jobs:
       DB_HOST: ${{ secrets.DB_HOST }}
       DB_PORT: ${{ secrets.DB_PORT }}
       DATABASE_PATH: ${{ secrets.DATABASE_PATH }}
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+      MINIO_FIRST_PORT: ${{ secrets.MINIO_FIRST_PORT }}
+      MINIO_SECONDARY_PORT: ${{ secrets.MINIO_SECONDARY_PORT }}
+      MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
+      MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
       - name: Code Checkout

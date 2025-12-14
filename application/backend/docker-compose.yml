@@ -1,6 +1,9 @@
 volumes:
   database-data:
     driver: local
+  minio-data: 
+    driver: local
+    
 networks:
   node-app:
 services:
@@ -18,6 +21,21 @@ services:
     labels:
       - docker-volume-backup.stop-during-backup=true # Important for backup
     command: ["tail", "-f", "/dev/null"]
+  minio:
+    image: minio/minio
+    container_name: minio
+    restart: always
+    ports:
+      - "${MINIO_FIRST_PORT}:${MINIO_FIRST_PORT}"
+      - "${MINIO_SECONDARY_PORT}:${MINIO_SECONDARY_PORT}"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY}
+    command: server /data --console-address ":${MINIO_SECONDARY_PORT}"
+    networks:
+      - node-app
+    volumes:
+      - minio-data:/data
   app:
     build:
       context: .
