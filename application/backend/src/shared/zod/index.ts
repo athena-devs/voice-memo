@@ -3,7 +3,7 @@ import { IUser } from "@models/user";
 import { IMemo } from "@models/memo";
 
 export class VerifyData {
-    verify_user(user: IUser) {
+    verifyUser(user: IUser) {
         const schema = z.object({
             name: z.string().max(50),
             email: z.email().max(25),
@@ -13,7 +13,7 @@ export class VerifyData {
         return schema.parse(user);
     }
 
-    verify_memo(memo: IMemo) {
+    verifyMemo(memo: IMemo) {
         const schema = z.object({
             title: z.string().max(25),
             path: z.string().max(50),
@@ -26,7 +26,7 @@ export class VerifyData {
     }
 
     
-    verify_file(file: Express.Multer.File) {
+    verifyFile(file: Express.Multer.File) {
         const MAX_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
         
         const ALLOWED_MIMES = [
@@ -50,7 +50,7 @@ export class VerifyData {
         return fileSchema.parse(file);
     }
 
-    verify_id(id: string) {
+    verifyId(id: string) {
         const schema = z.object({
             id: z.uuid()
         });
