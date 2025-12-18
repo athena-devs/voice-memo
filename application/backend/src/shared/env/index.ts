@@ -12,13 +12,16 @@ const envSchema = z.object({
     MINIO_HOST: z.string().default(""),
     MINIO_PORT: z.coerce.number().default(9000),
     MINIO_ACCESS_KEY: z.string().default(""),
-    MINIO_SECRET_KEY: z.string().default("")
+    MINIO_SECRET_KEY: z.string().default(""),
+    GOOGLE_CLIENT_ID: z.string().default(""),
+    GOOGLE_CLIENT_SECRET: z.string().default(""),
+    GOOGLE_REDIRECT_URI: z.string().default("")
 })
 
 const _env = envSchema.safeParse(process.env)
 
 if (!_env.success) {
-    console.error("Invalid environment variable", _env.error.format())
+    console.error("Invalid environment variable", z.treeifyError(_env.error))
   
     throw new Error("❌ Invalid environment variables")
   }
