@@ -4,18 +4,25 @@ import { MemoFactories } from "@services/memo-services/use-cases/factories";
 import { AppError } from "@shared/app-error";
 
 export class MemoController {
-    private data = new VerifyData()
-    private factory = new MemoFactories()
+
+    private data : VerifyData
+    private factory:  MemoFactories
+
+    constructor( 
+        data: VerifyData = new VerifyData(), factory: MemoFactories = new MemoFactories
+    ) {
+        this.data = data
+        this.factory = factory
+    }
 
     createMemo = async (request: Request, response: Response) => {
-        const userId = "123e4567-e89b-12d3-a456-426614174000"
         const { file } = request
         const mime = "audio/webm"
 
         if (file) {
             const createMemo = this.factory.makeMemosCreateUseCase()
-            const parsedMemo = this.data.verify_file(file)
-            const { id } = this.data.verify_id(userId)
+            const parsedMemo = this.data.verifyFile(file)
+            const { id } = this.data.verifyId(request.params.userId)
             const memo = await createMemo.execute({
                 filePath: parsedMemo.path,
                 userId: id,
@@ -30,7 +37,7 @@ export class MemoController {
 
     getMemo = async (request: Request, response: Response) => {
         const getMemo = this.factory.makeMemosGetUseCase()
-        const { id } = this.data.verify_id(request.params.id)
+        const { id } = this.data.verifyId(request.params.id)
         const memo = await getMemo.execute(id)
 
         return response.status(200).send(memo)
@@ -38,8 +45,8 @@ export class MemoController {
 
     updateMemo = async (request: Request, response: Response) => {
         const updateMemo = this.factory.makeMemosUpdateUseCase()
-        const parsedMemo = this.data.verify_memo(request.body)
-        const { id } = this.data.verify_id(request.params.id)
+        const parsedMemo = this.data.verifyMemo(request.body)
+        const { id } = this.data.verifyId(request.params.id)
         const memo = await updateMemo.execute(id, parsedMemo)
 
         return response.status(200).send(memo)
@@ -47,7 +54,7 @@ export class MemoController {
 
     deleteMemo = async (request: Request, response: Response) => {
         const deleteMemo = this.factory.makeMemosDeleteUseCase()
-        const { id } = this.data.verify_id(request.params.id)
+        const { id } = this.data.verifyId(request.params.id)
 
         await deleteMemo.execute(id)
         return response.status(200)
