@@ -19,7 +19,7 @@ export class MemosUpdateUseCase {
         
         return responseFormat({
             data: payload, 
-            message: "User deleted",
+            message: "Memo deleted",
             statusCode: 200
 
         })

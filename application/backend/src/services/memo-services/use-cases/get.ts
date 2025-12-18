@@ -16,7 +16,7 @@ export class MemosGetUseCase {
 
         return responseFormat({
             data: payload, 
-            message: "User retrivied succesfully",
+            message: "Memo retrivied succesfully",
             statusCode: 200
 
         })

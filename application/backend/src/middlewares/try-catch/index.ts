@@ -1,3 +1,5 @@
+import { errorHandler } from "@middlewares/error-handler";
+import { AppError } from "@shared/app-error";
 import { NextFunction, Request, Response } from "express";
 
 export const tryCatch =
@@ -5,7 +7,7 @@ export const tryCatch =
   async (request: Request, response: Response, next: NextFunction) => {
     try {
       await controller(request, response);
-    } catch (error: any) {
-      next(error);
+    } catch (err: any) {
+      next(errorHandler(new AppError(`Invalid data or access: ${err}`, 403 ), request, response, next));
     }
   };
