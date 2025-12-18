@@ -3,8 +3,8 @@ import { Request, Response } from "express";
 import { UserFactory } from "@services/user-services/use-cases/factories";
 
 export class UserController {
-    private data : VerifyData
-    private factory:  UserFactory
+    private readonly data : VerifyData
+    private readonly factory:  UserFactory
 
     constructor( 
         data: VerifyData = new VerifyData(), factory: UserFactory = new UserFactory
