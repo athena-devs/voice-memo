@@ -10,7 +10,7 @@ services:
   db:
     image: hibitdev/sqlite:latest
     restart: always
-    container_name: ${DB_IMAGE_NAME}
+    container_name: sqlite
     hostname: ${DB_HOST}
     ports:
       - ${DB_PORT}:${DB_PORT}
