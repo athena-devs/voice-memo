@@ -43,6 +43,6 @@ export class UserController {
         const { id } = this.data.verifyId(request.params.id)
 
         await deleteUser.execute(id)
-        return response.status(200)
+        return response.status(204).send()
     }
 }

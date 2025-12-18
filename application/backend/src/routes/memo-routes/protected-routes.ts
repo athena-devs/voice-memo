@@ -4,7 +4,7 @@ import { Router } from "express";
 import multer from 'multer';
 
 const memo = new MemoController()
-const upload = multer({ dest: 'uploads/'})
+const upload = multer({ dest: '/tmp/uploads/'})
 export const memoRoutes = Router()
 .post('/', upload.single('audio'), tryCatch(memo.createMemo))
 .get('/:id', tryCatch(memo.getMemo))

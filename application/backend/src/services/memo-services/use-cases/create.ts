@@ -1,46 +1,51 @@
 import { IMemo, ICreateMemoInput } from "@models/memo";
 import { MemosRepository } from "../repositories";
-import { Groq } from "groq-sdk";
-import { env } from "@shared/env";
 import { MIME_TO_EXT } from "@shared/convert-extension";
 import { AppError } from "@shared/app-error";
 import { FsClient } from "@config/fs-client";
 import { MinioClient } from "@config/minio";
+import { AIClient } from "@config/ai-client";
 
 export class MemosCreateUseCase {
-    constructor(private memosRepository: MemosRepository) {
+    private readonly minio: MinioClient
+    private readonly fs: FsClient
+    private readonly ai: AIClient 
+
+    constructor(
+        private memosRepository: MemosRepository, private minioClient: MinioClient = new MinioClient, private fsClient: FsClient = new FsClient, private aiClient = new AIClient
+    ) {    
         this.memosRepository = memosRepository
+        this.minio = minioClient
+        this.fs = fsClient
+        this.ai = aiClient
     }
   
     async execute(input: ICreateMemoInput): Promise<IMemo | AppError> {
-        const groq = new Groq({apiKey: env.API_KEY})
         const filePath = input.filePath
         const mime = MIME_TO_EXT[input.mimetype]
         const streamPath = `${filePath}.${mime}`
-        const minio = new MinioClient() 
-        const fs = new FsClient()
 
         try {
-            fs.rename(filePath, streamPath)
-            const fileStream = fs.create(streamPath)
+            this.fs.rename(filePath, streamPath)
+            const fileStream = this.fs.create(streamPath)
 
             // Transcription
-            const transcripiton = await groq.audio.transcriptions.create({
+            const transcripiton = await this.ai.createAudioDescription({
                 file: fileStream,
                 model: "whisper-large-v3",
-                response_format: "json",
+                responseFormat: "json",
                 language: "pt"
             })
             
             // Save on storage
-            const storage = await minio.upload({
+            const storage = await this.minio.upload({
                 filePath: streamPath,
                 mimetype: mime,
                 userId: input.userId
             })
             
             // Clean after save on minio
-            fs.delete(filePath, streamPath)
+            this.fs.delete(filePath, streamPath)
 
             // Create Memo
             const memo = await this.memosRepository.createMemo({
@@ -54,7 +59,7 @@ export class MemosCreateUseCase {
             return memo
 
         } catch (err: any) {
-            fs.delete(filePath, streamPath)
+            this.fs.delete(filePath, streamPath)
             throw new AppError(`Internal Server Error: ${err}`, 500)
         }
     }

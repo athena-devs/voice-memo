@@ -5,8 +5,8 @@ import { responseFormat } from '@shared/response-format'
 import * as Minio from 'minio'
 
 export class MinioClient {
-  private client: Minio.Client;
-  private bucketName = "voice-memo-storage"
+  private readonly client: Minio.Client;
+  private readonly bucketName = "voice-memo-storage"
 
   constructor() {
     this.client = new Minio.Client({
@@ -25,7 +25,7 @@ export class MinioClient {
       if (!exists) {
         await this.client.makeBucket(this.bucketName, "sa-east-1")
         console.log(responseFormat({
-          statusCode: 200,
+          statusCode: 201,
           message: "WARNING! A Bucket was created see if nothing nasty is happening!"
         }))
       }
@@ -50,7 +50,7 @@ export class MinioClient {
       }
 
       return responseFormat({
-        statusCode: 200,
+        statusCode: 201,
         message: "Audio Created!",
         data: response
       })
