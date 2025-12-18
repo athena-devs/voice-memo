@@ -5,8 +5,8 @@ import { AppError } from "@shared/app-error";
 
 export class MemoController {
 
-    private data : VerifyData
-    private factory:  MemoFactories
+    private readonly data : VerifyData
+    private readonly factory:  MemoFactories
 
     constructor( 
         data: VerifyData = new VerifyData(), factory: MemoFactories = new MemoFactories
@@ -17,8 +17,6 @@ export class MemoController {
 
     createMemo = async (request: Request, response: Response) => {
         const { file } = request
-        const mime = "audio/webm"
-
         if (file) {
             const createMemo = this.factory.makeMemosCreateUseCase()
             const parsedMemo = this.data.verifyFile(file)
@@ -26,7 +24,7 @@ export class MemoController {
             const memo = await createMemo.execute({
                 filePath: parsedMemo.path,
                 userId: id,
-                mimetype: mime
+                mimetype: file.mimetype
             })
          
             return response.status(201).send(memo)
@@ -57,6 +55,6 @@ export class MemoController {
         const { id } = this.data.verifyId(request.params.id)
 
         await deleteMemo.execute(id)
-        return response.status(200)
+        return response.status(204)
     }
 }
