@@ -7,6 +7,6 @@ export const tryCatch =
     try {
       await controller(request, response);
     } catch (err: any) {
-      next(logger.error(`Invalid data or access: ${err}`));
+      next(err);
     }
   };
