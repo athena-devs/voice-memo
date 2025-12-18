@@ -6,7 +6,7 @@ export class VerifyData {
     verify_user(user: IUser) {
         const schema = z.object({
             name: z.string().max(50),
-            email: z.string().email().max(25),
+            email: z.email().max(25),
             password: z.string().min(6)
         });
 

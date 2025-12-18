@@ -18,19 +18,24 @@
   "dependencies": {
     "@prisma/client": "^6.7.0",
     "@types/multer": "^2.0.0",
+    "bcrypt": "^6.0.0",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "groq-sdk": "^0.37.0",
+    "jsonwebtoken": "^9.0.3",
     "minio": "^8.0.6",
     "multer": "^2.0.2",
     "prisma": "^6.7.0",
+    "tslog": "^4.10.2",
     "typescript": "^5.8.3",
     "zod": "^4.1.13"
   },
   "devDependencies": {
-    "pkgroll": "^2.21.4",
-    "tsx": "^4.19.4",
+    "@types/bcrypt": "^6.0.0",
     "@types/express": "^5.0.1",
-    "@types/node": "^22.15.15"
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^22.15.15",
+    "pkgroll": "^2.21.4",
+    "tsx": "^4.19.4"
   }
 }
