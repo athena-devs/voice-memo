@@ -16,14 +16,13 @@ export class MemoController {
     }
 
     createMemo = async (request: Request, response: Response) => {
-        const { file } = request
-        if (file) {
+        const { file, user } = request
+        if (file && user) {
             const createMemo = this.factory.makeMemosCreateUseCase()
             const parsedMemo = this.data.verifyFile(file)
-            const { id } = this.data.verifyId(request.params.userId)
             const memo = await createMemo.execute({
                 filePath: parsedMemo.path,
-                userId: id,
+                userId: user.id,
                 mimetype: file.mimetype
             })
          
