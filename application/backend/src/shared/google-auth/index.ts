@@ -1,6 +1,7 @@
 import { OAuth2Client } from "google-auth-library";
 import { env } from "@shared/env";
 import { AppError } from "@shared/app-error";
+import crypto from "crypto";
 
 const googleClient = new OAuth2Client({
   clientId: env.GOOGLE_CLIENT_ID,
@@ -9,10 +10,16 @@ const googleClient = new OAuth2Client({
 });
 
 export class GoogleAuth {
-  static generateAuthUrl() {
+  static setState(state: string) {
+    const serializedState = crypto.randomBytes(32).toString('hex')
+    return serializedState
+  }
+
+  static generateAuthUrl(state: string ) {
     return googleClient.generateAuthUrl({
       access_type: 'offline',
-      scope: ["profile", "email"]
+      scope: ["profile", "email"],
+      state: state
     });
   }
 

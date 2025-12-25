@@ -1,16 +1,34 @@
 import { z } from "zod";
 import { IUser } from "@models/user";
 import { IMemo } from "@models/memo";
+import { IRequestDTO, IUserDTO } from "@models/auth";
 
 export class VerifyData {
     verifyUser(user: IUser) {
         const schema = z.object({
             name: z.string().max(50),
             email: z.email().max(25),
-            password: z.string().min(6)
+            password: z.string().min(6).max(25)
+        });
+        
+        return schema.parse(user);
+    }
+
+    verifyLogin(user: IUserDTO) {
+        const schema = z.object({
+            email: z.email().max(25),
+            password: z.string().min(6).max(25)
         });
 
-        return schema.parse(user);
+        return schema.parse(user)
+    }
+
+    verifyGoogleLogin(code: IRequestDTO){
+        const schema = z.object({
+            code: z.string().min(1)
+        });
+
+        return schema.parse(code)
     }
 
     verifyMemo(memo: IMemo) {
