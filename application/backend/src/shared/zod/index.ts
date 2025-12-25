@@ -1,15 +1,25 @@
 import { z } from "zod";
-import { IUserCreateDTO, IUser, IUserResponseDTO } from "@models/user";
+import { IUserCreateDTO, IUser, IUserResponseDTO, IUserUpdateDTO } from "@models/user";
 import { IMemo } from "@models/memo";
 import { IRequestDTO } from "@models/auth";
 
 export class VerifyData {
    
-    verifyCreateUser(user: IUserCreateDTO) {
+    verifyUserCreate(user: IUserCreateDTO) {
         const schema = z.object({
             name: z.string().max(50),
             email: z.email().max(25),
             password: z.string().min(6).max(25)
+        });
+        
+        return schema.parse(user);
+    }
+
+    verifyUserUpdate(user: IUserUpdateDTO) {
+        const schema = z.object({
+            name: z.string().max(50).optional(),
+            email: z.email().max(25).optional(),
+            password: z.string().min(6).max(25).optional()
         });
         
         return schema.parse(user);
