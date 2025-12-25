@@ -4,6 +4,8 @@ import { AppError } from "@shared/app-error";
 import { sign } from "jsonwebtoken";
 import { env } from "@shared/env";
 import { IRequestDTO } from "@models/auth";
+import { responseFormat } from "@shared/response-format";
+import { IUser, IUserResponseDTO } from "@models/user";
 
 
 export class LoginGoogleUseCase {
@@ -13,12 +15,13 @@ export class LoginGoogleUseCase {
 
   async execute(data: IRequestDTO ) {
     const payload = await GoogleAuth.verifyGoogleToken(data.code);
+    let user : IUser | IUserResponseDTO | null;
 
     if (!payload || !payload.email) {
       throw new AppError("Invalid Google Token", 401);
     }
 
-    let user = await this.usersRepository.findByEmail(payload.email);
+    user = await this.usersRepository.findByEmail(payload.email);
 
     if (!user) {
         user = await this.usersRepository.createUser({
@@ -28,11 +31,30 @@ export class LoginGoogleUseCase {
         });
     }
 
-    const token = sign(user, env.JWT_SECRET, { expiresIn: env.JWT_EXPIRES_IN, algorithm: "HS256"})
+    const token = sign(
+      {
+        sub: user.id, 
+        id: user.id,
+        email: user.email,
+        name: user.name 
+      }, 
+      env.JWT_SECRET, 
+      { expiresIn: env.JWT_EXPIRES_IN, algorithm: "HS256" }
+    );
 
-    return {
-      user,
+    const payloadUser = {
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+      },
       token,
     };
+
+    return responseFormat({
+        data: payloadUser, 
+        message: "User retrivied succesfully",
+        statusCode: 200
+    })
   }
 }

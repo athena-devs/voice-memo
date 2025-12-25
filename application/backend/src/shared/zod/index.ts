@@ -1,9 +1,11 @@
 import { z } from "zod";
 import { IUserCreateDTO, IUser, IUserResponseDTO, IUserUpdateDTO } from "@models/user";
-import { IMemo } from "@models/memo";
+import { IMemo, IMemoUpdate } from "@models/memo";
 import { IRequestDTO } from "@models/auth";
 
 export class VerifyData {
+
+    // USER
    
     verifyUserCreate(user: IUserCreateDTO) {
         const schema = z.object({
@@ -60,6 +62,7 @@ export class VerifyData {
         return schema.parse(code)
     }
 
+    // MEMO
 
     verifyMemo(memo: IMemo) {
         const schema = z.object({
@@ -73,7 +76,16 @@ export class VerifyData {
         return schema.parse(memo);
     }
 
-    
+    verifyMemoUpdate(memo: IMemoUpdate) {
+        const schema = z.object({
+            title: z.string().max(25).optional(),
+            text: z.string().max(200).optional(),
+            summary: z.string().max(200).optional(),
+        });
+
+        return schema.parse(memo);
+    }
+
     verifyFile(file: Express.Multer.File) {
         const MAX_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
         
@@ -97,6 +109,8 @@ export class VerifyData {
 
         return fileSchema.parse(file);
     }
+
+    // GENERIC
 
     verifyId(id: string) {
         const schema = z.object({

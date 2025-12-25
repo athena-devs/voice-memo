@@ -8,6 +8,12 @@ export interface IMemo {
     userId: string
 }
 
+export interface IMemoUpdate {
+    title?: string
+    summary?: string
+    text?: string
+}
+
 export interface ICreateMemoInput {
     filePath: string;
     userId: string;
