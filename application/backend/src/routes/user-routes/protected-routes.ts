@@ -1,11 +1,13 @@
 import { UserController } from "@controllers/user-controller";
+import { auth } from "@middlewares/auth";
 import { tryCatch } from "@middlewares/try-catch";
 import { Router } from "express";
 
 const user = new UserController()
 
 export const userRoutes = Router()
-.post('/', tryCatch(user.createUser))
+
+userRoutes.use(tryCatch(auth))
 .get('/:id', tryCatch(user.getUser))
 .patch('/:id', tryCatch(user.updateUser))
 .delete('/:id', tryCatch(user.deleteUser))

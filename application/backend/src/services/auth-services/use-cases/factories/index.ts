@@ -15,4 +15,5 @@ export class AuthFactory{
         const  loginEmailUseCase = new LoginEmailUseCase(this.prismaUsersRepository)
         return loginEmailUseCase
     }
+
 }
