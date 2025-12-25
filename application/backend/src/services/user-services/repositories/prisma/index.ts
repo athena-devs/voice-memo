@@ -1,9 +1,9 @@
 import { prisma } from "@config/prisma";
 import { UsersRepository } from "@services/user-services/repositories";
-import { IUser } from "@models/user";
+import { IUserCreateDTO, IUser, IUserResponseDTO  } from "@models/user";
 
 export class PrismaUsersRepository implements UsersRepository {
-    async createUser(data: IUser): Promise<IUser> {
+    async createUser(data: IUserCreateDTO): Promise<IUserResponseDTO> {
         const user = await prisma.user.create({
             data: {
                 name: data.name,
@@ -14,7 +14,7 @@ export class PrismaUsersRepository implements UsersRepository {
         return user
     }
     
-    async getUser(id: string): Promise<IUser | null> {
+    async getUser(id: string): Promise<IUserResponseDTO | null> {
         const user = await prisma.user.findUnique({
             where: {id}
         }) 
@@ -28,7 +28,7 @@ export class PrismaUsersRepository implements UsersRepository {
         return user
     }
     
-    async updateUser(id: string, data: IUser): Promise<IUser |  null> {
+    async updateUser(id: string, data: IUser): Promise<IUserResponseDTO |  null> {
         const user = await prisma.user.update({
             where: {id},
             data: {

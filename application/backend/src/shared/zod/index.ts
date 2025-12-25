@@ -1,10 +1,21 @@
 import { z } from "zod";
-import { IUser } from "@models/user";
+import { IUserCreateDTO, IUser, IUserResponseDTO } from "@models/user";
 import { IMemo } from "@models/memo";
-import { IRequestDTO, IUserDTO } from "@models/auth";
+import { IRequestDTO } from "@models/auth";
 
 export class VerifyData {
     verifyUser(user: IUser) {
+        const schema = z.object({
+            id: z.uuid(),
+            name: z.string().max(50),
+            email: z.email().max(25),
+            password: z.string().min(6).max(25)
+        });
+        
+        return schema.parse(user);
+    }
+    
+    verifyCreateUser(user: IUserCreateDTO) {
         const schema = z.object({
             name: z.string().max(50),
             email: z.email().max(25),
@@ -14,14 +25,14 @@ export class VerifyData {
         return schema.parse(user);
     }
 
-    verifyLogin(user: IUserDTO) {
+    verifyUserResponse(user: IUserResponseDTO) {
         const schema = z.object({
-            id: z.uuidv4(),
+            id: z.uuid(),
+            name: z.string().max(50),
             email: z.email().max(25),
-            password: z.string().min(6).max(25)
         });
-
-        return schema.parse(user)
+        
+        return schema.parse(user);
     }
 
     verifyGoogleLogin(code: IRequestDTO){
