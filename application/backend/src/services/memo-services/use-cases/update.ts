@@ -1,14 +1,14 @@
 import { AppError } from "@shared/app-error";
 import { MemosRepository } from "../repositories";
 import { IResponseFmt, responseFormat } from "@shared/response-format";
-import { IMemo } from "@models/memo";
+import { IMemoUpdate } from "@models/memo";
 
 export class MemosUpdateUseCase {
     constructor(private memosRepository: MemosRepository) {
         this.memosRepository = memosRepository
     }
   
-    async execute(id: string, data:  IMemo): Promise<IResponseFmt | AppError> {
+    async execute(id: string, data:  IMemoUpdate): Promise<IResponseFmt | AppError> {
         const memo = await this.memosRepository.getMemo(id)
 
         if (!memo) {
@@ -19,7 +19,7 @@ export class MemosUpdateUseCase {
         
         return responseFormat({
             data: payload, 
-            message: "Memo deleted",
+            message: "Memo updated",
             statusCode: 200
 
         })

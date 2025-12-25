@@ -42,7 +42,7 @@ export class MemoController {
 
     updateMemo = async (request: Request, response: Response) => {
         const updateMemo = this.factory.makeMemosUpdateUseCase()
-        const parsedMemo = this.data.verifyMemo(request.body)
+        const parsedMemo = this.data.verifyMemoUpdate(request.body)
         const { id } = this.data.verifyId(request.params.id)
         const memo = await updateMemo.execute(id, parsedMemo)
 

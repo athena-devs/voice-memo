@@ -1,6 +1,6 @@
 import { prisma } from "@config/prisma";
 import { MemosRepository } from "@services/memo-services/repositories";
-import { IMemo } from "@models/memo";
+import { IMemo, IMemoUpdate } from "@models/memo";
 
 export class PrismaMemosRepository implements MemosRepository {
     async createMemo(data: IMemo): Promise<IMemo> {
@@ -25,11 +25,10 @@ export class PrismaMemosRepository implements MemosRepository {
         return memo
     }
     
-    async updateMemo(id: string, data: IMemo): Promise<IMemo |  null> {
+    async updateMemo(id: string, data: IMemoUpdate): Promise<IMemo |  null> {
         const memo = await prisma.memo.update({
             where: {id},
             data: {
-                path: data.path,
                 text: data.text,
                 title: data.title,
                 summary: data.summary,
