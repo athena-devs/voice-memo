@@ -1,17 +1,17 @@
-import { IUserDTO } from "@models/auth";
 import { UsersRepository } from "@services/user-services/repositories";
 import { sign } from "jsonwebtoken";
 import { env } from "@shared/env";
 import { AppError } from "@shared/app-error";
 import { compareHashPasswords } from "@shared/encrypt";
 import { responseFormat } from "@shared/response-format";
+import { IUser } from "@models/user";
 
 export class LoginEmailUseCase {
   constructor(private usersRepository: UsersRepository) {
     this.usersRepository = usersRepository
   }
 
-  async execute(data: IUserDTO) {
+  async execute(data: IUser) {
     const user = await this.usersRepository.findByEmail(data.email);
 
     if (!user) {

@@ -1,9 +1,9 @@
-import { IUser } from "@models/user"
+import {IUserCreateDTO, IUser, IUserResponseDTO } from "@models/user"
 
 export interface UsersRepository {
-    createUser(data: IUser): Promise<IUser>
-    getUser(id: string): Promise<IUser | null>
+    createUser(data: IUserCreateDTO): Promise<IUserResponseDTO>
+    getUser(id: string): Promise<IUserResponseDTO | null>
     findByEmail(email: string): Promise<IUser | null>
-    updateUser(id: string, data: IUser): Promise<IUser | null>
+    updateUser(id: string, data: IUserResponseDTO): Promise<IUserResponseDTO | null>
     deleteUser(id: string | null): Promise<void>
 }

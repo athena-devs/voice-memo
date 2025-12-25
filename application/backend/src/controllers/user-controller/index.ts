@@ -15,7 +15,7 @@ export class UserController {
     
     createUser = async (request: Request, response: Response) => {
         const createUser = this.factory.makeUsersCreateUseCase()
-        const parsedUser = this.data.verifyUser(request.body)
+        const parsedUser = this.data.verifyCreateUser(request.body)
         const user = await createUser.execute(parsedUser)
         
         return response.status(201).send(user)
@@ -31,9 +31,8 @@ export class UserController {
 
     updateUser = async (request: Request, response: Response) => {
         const updateUser = this.factory.makeUsersUpdateUseCase()
-        const parsedUser = this.data.verifyUser(request.body)
-        const { id } = this.data.verifyId(request.params.id)
-        const user = await updateUser.execute(id, parsedUser)
+        const parsedUser = this.data.verifyUserResponse(request.body)
+        const user = await updateUser.execute(parsedUser)
         
         return response.status(200).send(user)
     }

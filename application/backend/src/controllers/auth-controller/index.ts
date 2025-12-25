@@ -16,7 +16,7 @@ export class AuthController {
 
     emailLogin = async (request: Request, response: Response) => {
         const loginUser = this.factory.makeLoginEmailUseCase()
-        const parsedUser = this.data.verifyLogin(request.body) 
+        const parsedUser = this.data.verifyUser(request.body) 
         const user = await loginUser.execute(parsedUser)
 
         return response.status(200).send(user)
