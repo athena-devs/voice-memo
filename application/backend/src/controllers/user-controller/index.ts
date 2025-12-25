@@ -32,7 +32,8 @@ export class UserController {
     updateUser = async (request: Request, response: Response) => {
         const updateUser = this.factory.makeUsersUpdateUseCase()
         const parsedUser = this.data.verifyUserResponse(request.body)
-        const user = await updateUser.execute(parsedUser)
+        const { id } = this.data.verifyId(request.params.id)
+        const user = await updateUser.execute(id, parsedUser)
         
         return response.status(200).send(user)
     }

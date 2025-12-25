@@ -1,15 +1,14 @@
 import { AppError } from "@shared/app-error";
 import { UsersRepository } from "../repositories";
 import { IResponseFmt, responseFormat } from "@shared/response-format";
-import {IUserResponseDTO } from "@models/user";
+import { IUserUpdateDTO } from "@models/user";
 
 export class UsersUpdateUseCase {
     constructor(private usersRepository: UsersRepository) {
         this.usersRepository = usersRepository
     }
   
-    async execute(data:  IUserResponseDTO): Promise<IResponseFmt | AppError> {
-        const { id } = data
+    async execute(id: string, data:  IUserUpdateDTO): Promise<IResponseFmt | AppError> {
         const user = await this.usersRepository.getUser(id)
 
         if (!user) {
