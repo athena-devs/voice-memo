@@ -2,6 +2,7 @@ import { AppError } from "@shared/app-error";
 import { UsersRepository } from "../repositories";
 import { IResponseFmt, responseFormat } from "@shared/response-format";
 import { IUserUpdateDTO } from "@models/user";
+import { generateHashPassword } from "@shared/encrypt";
 
 export class UsersUpdateUseCase {
     constructor(private usersRepository: UsersRepository) {
@@ -14,12 +15,18 @@ export class UsersUpdateUseCase {
         if (!user) {
             throw new AppError("User not found!", 404)        
         }
+
+        const dataToUpdate = { ...data }
+
+        if (data.password) {
+            dataToUpdate.password = await generateHashPassword(data.password)
+        }
         
-        const payload = await this.usersRepository.updateUser(id, data)
+        const payload = await this.usersRepository.updateUser(id, dataToUpdate)
         
         return responseFormat({
             data: payload, 
-            message: "User deleted",
+            message: "User updated",
             statusCode: 200
 
         })
