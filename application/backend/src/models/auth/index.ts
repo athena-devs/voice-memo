@@ -5,6 +5,7 @@ export interface IRequestDTO {
 }
 
 export interface IToken extends JwtPayload {
+  id: string;
   email: string;
   name: string;
 }

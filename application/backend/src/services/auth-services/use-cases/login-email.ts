@@ -4,14 +4,14 @@ import { env } from "@shared/env";
 import { AppError } from "@shared/app-error";
 import { compareHashPasswords } from "@shared/encrypt";
 import { responseFormat } from "@shared/response-format";
-import { IUser } from "@models/user";
+import { IUserRequestDTO } from "@models/user";
 
 export class LoginEmailUseCase {
   constructor(private usersRepository: UsersRepository) {
     this.usersRepository = usersRepository
   }
 
-  async execute(data: IUser) {
+  async execute(data: IUserRequestDTO) {
     const user = await this.usersRepository.findByEmail(data.email);
 
     if (!user) {
@@ -25,6 +25,7 @@ export class LoginEmailUseCase {
 
     const token = sign(
       { 
+        id: user.id,
         email: user.email,
         name: user.name 
       }, 
@@ -34,6 +35,7 @@ export class LoginEmailUseCase {
 
     const payload = {
       user: {
+        id: user.id,
         name: user.name,
         email: user.email,
       },

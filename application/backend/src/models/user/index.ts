@@ -11,6 +11,11 @@ export interface IUserCreateDTO {
     password: string
 }
 
+export interface IUserRequestDTO {
+    email: string
+    password: string
+}
+
 export interface IUserResponseDTO {
     id: string
     name: string

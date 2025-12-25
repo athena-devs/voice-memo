@@ -4,9 +4,9 @@ import { IMemo } from "@models/memo";
 import { IRequestDTO } from "@models/auth";
 
 export class VerifyData {
-    verifyUser(user: IUser) {
+   
+    verifyCreateUser(user: IUserCreateDTO) {
         const schema = z.object({
-            id: z.uuid(),
             name: z.string().max(50),
             email: z.email().max(25),
             password: z.string().min(6).max(25)
@@ -14,10 +14,9 @@ export class VerifyData {
         
         return schema.parse(user);
     }
-    
-    verifyCreateUser(user: IUserCreateDTO) {
+
+    verifyUserRequest(user: IUser) {
         const schema = z.object({
-            name: z.string().max(50),
             email: z.email().max(25),
             password: z.string().min(6).max(25)
         });
