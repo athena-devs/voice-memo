@@ -16,6 +16,7 @@ export class VerifyData {
 
     verifyLogin(user: IUserDTO) {
         const schema = z.object({
+            id: z.uuidv4(),
             email: z.email().max(25),
             password: z.string().min(6).max(25)
         });
@@ -30,6 +31,15 @@ export class VerifyData {
 
         return schema.parse(code)
     }
+
+    verifyToken(code: IRequestDTO){
+        const schema = z.object({
+            code: z.jwt({alg: "HS256"})
+        });
+
+        return schema.parse(code)
+    }
+
 
     verifyMemo(memo: IMemo) {
         const schema = z.object({
