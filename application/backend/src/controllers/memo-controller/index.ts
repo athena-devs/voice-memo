@@ -34,7 +34,7 @@ export class MemoController {
 
     getAllMemos = async (request: Request, response: Response) => {
         const getMemo = this.factory.makeMemosGetAllUseCase()
-        const { id } = this.data.verifyId(request.params.userId)
+        const { id } = this.data.verifyId(request.body.userId)
         const memo = await getMemo.execute(id)
 
         return response.status(200).send(memo)
