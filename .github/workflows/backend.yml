@@ -31,6 +31,8 @@ jobs:
       MINIO_SECONDARY_PORT: ${{ secrets.MINIO_SECONDARY_PORT }}
       MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
       MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
+      JWT_EXPIRES_IN: ${{ secrets.JWT_EXPIRES_IN }}
+      SALT_RESULT: ${{ secrets.SALT_RESULT }}
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
