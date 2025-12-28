@@ -16,7 +16,7 @@ const envSchema = z.object({
     GOOGLE_CLIENT_ID: z.string().default(""),
     GOOGLE_CLIENT_SECRET: z.string().default(""),
     GOOGLE_REDIRECT_URI: z.string().default(""),
-    CORS_ORIGIN: z.string().transform((val) => val.split(","))
+    CORS_ORIGIN: z.string().default("http://localhost:5500")
 })
 
 const _env = envSchema.safeParse(process.env)
