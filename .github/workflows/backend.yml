@@ -36,6 +36,7 @@ jobs:
       GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
       GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
       GOOGLE_REDIRECT_URI: ${{ secrets.GOOGLE_REDIRECT_URI }}
+      CORS_ORIGIN: ${{ secrets.CORS_ORIGIN }}
       JWT_EXPIRES_IN: ${{ secrets.JWT_EXPIRES_IN }}
       SALT_RESULT: ${{ secrets.SALT_RESULT }}
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

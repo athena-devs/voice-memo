@@ -31,7 +31,7 @@ services:
     environment:
       NODE_ENV: production
       PORT: ${APP_PORT}
-      DATABASE_URL: ${DATABASE_URL} 
+      DATABASE_URL: ${DATABASE_URL}
       API_KEY: ${API_KEY}
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN}
@@ -43,6 +43,7 @@ services:
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
       GOOGLE_REDIRECT_URI: ${GOOGLE_REDIRECT_URI}
+      CORS_ORIGIN: ${CORS_ORIGIN}
     # depends_on:
     #   - db
     ports:
