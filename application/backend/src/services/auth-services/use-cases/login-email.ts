@@ -1,5 +1,5 @@
 import { UsersRepository } from "@services/user-services/repositories";
-import { sign } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import { env } from "@shared/env";
 import { AppError } from "@shared/app-error";
 import { compareHashPasswords } from "@shared/encrypt";
@@ -23,7 +23,7 @@ export class LoginEmailUseCase {
       throw new AppError("Email or password incorrect", 401);
     }
 
-    const token = sign(
+    const token = jwt.sign(
       {
         sub: user.id, 
         id: user.id,

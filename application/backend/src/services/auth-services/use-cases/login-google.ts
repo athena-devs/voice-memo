@@ -1,7 +1,7 @@
 import { UsersRepository } from "@services/user-services/repositories";
 import { GoogleAuth } from "@shared/google-auth";
 import { AppError } from "@shared/app-error";
-import { sign } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import { env } from "@shared/env";
 import { IRequestDTO } from "@models/auth";
 import { responseFormat } from "@shared/response-format";
@@ -31,7 +31,7 @@ export class LoginGoogleUseCase {
         });
     }
 
-    const token = sign(
+    const token = jwt.sign(
       {
         sub: user.id, 
         id: user.id,
