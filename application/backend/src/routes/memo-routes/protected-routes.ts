@@ -8,7 +8,7 @@ const memo = new MemoController()
 const upload = multer({ dest: '/tmp/uploads/'})
 export const memoRoutes = Router()
 
-memoRoutes.use(tryCatch(auth))
+memoRoutes.use(auth)
 
 .post('/', upload.single('audio'), tryCatch(memo.createMemo))
 .get('/', tryCatch(memo.getAllMemos))

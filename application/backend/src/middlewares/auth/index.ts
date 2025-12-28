@@ -13,7 +13,7 @@ declare global {
   }
 }
 
-export const auth =  async (
+export const auth = (
   request: Request,
   response: Response,
   next: NextFunction
@@ -21,22 +21,19 @@ export const auth =  async (
   const authHeader = request.headers.authorization;
 
   if (!authHeader) {
-    errorHandler(new AppError("Token not provided", 401), request, response, next)
-  } else {
-    try {
-      const tokenWithoutBearer = authHeader.split(" ")[1];
-
-      jwt.verify(tokenWithoutBearer, env.JWT_SECRET as string, (err, decoded) => {
-        if (err) {
-          return errorHandler(new AppError("Invalid token ", 401), request, response, next)
-        }
-
-        request.user = decoded as IToken
-        // If OK keep going
-        // return next();
-      });
-    } catch (err: any) {
-      return errorHandler(new AppError(`Invalid authentication: ${err}`, 401), request, response, next)
-    }
+    errorHandler(new AppError("Token not provided", 401), request, response, next);
+    return;
   }
+
+  const tokenWithoutBearer = authHeader.split(" ")[1];
+
+  jwt.verify(tokenWithoutBearer, env.JWT_SECRET as string, (err, decoded) => {
+    if (err) {
+      errorHandler(new AppError("Invalid token ", 401), request, response, next);
+      return;
+    }
+
+    request.user = decoded as IToken;
+    next();
+  });
 };

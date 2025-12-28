@@ -34,7 +34,12 @@ export class MemoController {
 
     getAllMemos = async (request: Request, response: Response) => {
         const getMemo = this.factory.makeMemosGetAllUseCase()
-        const { id } = this.data.verifyId(request.body.userId)
+        
+        if (!request.user || !request.user.id) {
+             throw new AppError("User not authenticated", 401);
+        }
+
+        const { id } = this.data.verifyId(request.user.id)
         const memo = await getMemo.execute(id)
 
         return response.status(200).send(memo)
