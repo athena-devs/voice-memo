@@ -27,10 +27,15 @@ jobs:
       DB_HOST: ${{ secrets.DB_HOST }}
       DB_PORT: ${{ secrets.DB_PORT }}
       DATABASE_PATH: ${{ secrets.DATABASE_PATH }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }} 
+      API_KEY: ${{ secrets.API_KEY }}
       MINIO_FIRST_PORT: ${{ secrets.MINIO_FIRST_PORT }}
       MINIO_SECONDARY_PORT: ${{ secrets.MINIO_SECONDARY_PORT }}
       MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
       MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
+      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+      GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+      GOOGLE_REDIRECT_URI: ${{ secrets.GOOGLE_REDIRECT_URI }}
       JWT_EXPIRES_IN: ${{ secrets.JWT_EXPIRES_IN }}
       SALT_RESULT: ${{ secrets.SALT_RESULT }}
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

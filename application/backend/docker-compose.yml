@@ -28,6 +28,21 @@ services:
       dockerfile: Dockerfile
     image: ${IMAGE_NAME}:${VERSION}
     container_name: voice-memo
+    environment:
+      NODE_ENV: production
+      PORT: ${APP_PORT}
+      DATABASE_URL: ${DATABASE_URL} 
+      API_KEY: ${API_KEY}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN}
+      SALT_RESULT: ${SALT_RESULT}
+      MINIO_HOST: "minio"
+      MINIO_PORT: ${MINIO_SECONDARY_PORT}
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      GOOGLE_REDIRECT_URI: ${GOOGLE_REDIRECT_URI}
     # depends_on:
     #   - db
     ports:
