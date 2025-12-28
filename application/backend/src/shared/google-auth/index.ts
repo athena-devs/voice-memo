@@ -10,19 +10,6 @@ const googleClient = new OAuth2Client({
 });
 
 export class GoogleAuth {
-  static setState(state: string) {
-    const serializedState = crypto.randomBytes(32).toString('hex')
-    return serializedState
-  }
-
-  static generateAuthUrl(state: string ) {
-    return googleClient.generateAuthUrl({
-      access_type: 'offline',
-      scope: ["profile", "email"],
-      state: state
-    });
-  }
-
   static async verifyGoogleToken(tokenCode: string) {
     try {
       const { tokens } = await googleClient.getToken({
