@@ -198,10 +198,19 @@
                 body: JSON.stringify({ code })
             });
 
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.message || 'Falha Google Auth');
-            
-            saveToken(data.token || data.accessToken);
+            const rawText = await res.text();
+            console.log("Resposta Bruta do Servidor:", rawText); 
+
+            if (!res.ok) {
+                throw new Error(`Erro ${res.status}: ${rawText.substring(0, 100)}...`);
+            }
+
+            try {
+                const data = JSON.parse(rawText);
+                saveToken(data.token || data.accessToken);
+            } catch (jsonErr) {
+                throw new Error("O servidor não retornou JSON. Veja o console.");
+            }
         } catch (err) {
             setStatus('loginStatus', '❌ Google Erro: ' + err.message, 'error');
         }

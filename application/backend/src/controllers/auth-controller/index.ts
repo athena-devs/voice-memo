@@ -25,7 +25,7 @@ export class AuthController {
     googleLogin = async (request: Request, response: Response) => {
         const { code } = request.body
         const loginGoole = this.factory.makeLoginGoogleUseCase()
-        const parsedGoogle = this.data.verifyGoogleLogin(code)
+        const parsedGoogle = this.data.verifyGoogleLogin({ code })
         const login = await loginGoole.execute(parsedGoogle)
 
         return response.status(200).send(login)
