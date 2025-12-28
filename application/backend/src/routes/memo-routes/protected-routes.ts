@@ -11,6 +11,7 @@ export const memoRoutes = Router()
 memoRoutes.use(tryCatch(auth))
 
 .post('/', upload.single('audio'), tryCatch(memo.createMemo))
+.get('/', tryCatch(memo.getAllMemos))
 .get('/:id', tryCatch(memo.getMemo))
 .patch('/:id', tryCatch(memo.updateMemo))
 .delete('/:id', tryCatch(memo.deleteMemo))

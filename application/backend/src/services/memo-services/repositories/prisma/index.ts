@@ -24,6 +24,15 @@ export class PrismaMemosRepository implements MemosRepository {
 
         return memo
     }
+
+    
+    async getAllMemos(userId: string): Promise<IMemo[] | null> {
+        const memos = await prisma.memo.findMany({
+            where: {userId}
+        })
+
+        return memos
+    }
     
     async updateMemo(id: string, data: IMemoUpdate): Promise<IMemo |  null> {
         const memo = await prisma.memo.update({

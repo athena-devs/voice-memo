@@ -1,5 +1,5 @@
 import { PrismaMemosRepository } from "@services/memo-services/repositories/prisma";
-import { MemosCreateUseCase, MemosGetUseCase, MemosDeleteUseCase, MemosUpdateUseCase } from "@services/memo-services/use-cases";
+import { MemosCreateUseCase, MemoGetUseCase, MemosGetAllUseCase, MemosDeleteUseCase, MemosUpdateUseCase } from "@services/memo-services/use-cases";
 
 export class MemoFactories {
     private prismaMemosRepository  = new PrismaMemosRepository()
@@ -14,9 +14,15 @@ export class MemoFactories {
         return memosUpdateUseCase
     }
 
-    makeMemosGetUseCase() {
-        const  memosGetUseCase = new MemosGetUseCase(this.prismaMemosRepository)
-        return memosGetUseCase
+    makeMemosGetAllUseCase() {
+        const  memoGetUseCase = new MemosGetAllUseCase(this.prismaMemosRepository)
+        return memoGetUseCase
+    }
+
+
+    makeMemoGetUseCase() {
+        const  memoGetUseCase = new MemoGetUseCase(this.prismaMemosRepository)
+        return memoGetUseCase
     }
 
     makeMemosDeleteUseCase() {

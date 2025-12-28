@@ -33,7 +33,7 @@ export const auth =  async (
 
         request.user = decoded as IToken
         // If OK keep going
-        // next();
+        return next();
       });
     } catch (err: any) {
       return errorHandler(new AppError(`Invalid authentication: ${err}`, 401), request, response, next)

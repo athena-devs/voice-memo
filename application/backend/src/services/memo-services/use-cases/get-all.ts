@@ -2,13 +2,13 @@ import { AppError } from "@shared/app-error";
 import { MemosRepository } from "../repositories";
 import { IResponseFmt, responseFormat } from "@shared/response-format";
 
-export class MemoGetUseCase {
+export class MemosGetAllUseCase {
     constructor(private memosRepository: MemosRepository) {
         this.memosRepository = memosRepository
     }
   
-    async execute(id: string): Promise<IResponseFmt | AppError> {
-        const payload = await this.memosRepository.getMemo(id)
+    async execute(userId: string): Promise<IResponseFmt | AppError> {
+        const payload = await this.memosRepository.getAllMemos(userId)
         
         if (!payload) {
             throw new AppError("Memo not found!", 404)
