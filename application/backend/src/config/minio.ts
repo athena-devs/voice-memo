@@ -24,10 +24,10 @@ export class MinioClient {
     
       if (!exists) {
         await this.client.makeBucket(this.bucketName, "sa-east-1")
-        console.log(responseFormat({
+        console.log(JSON.stringify(responseFormat({
           statusCode: 201,
           message: "WARNING! A Bucket was created see if nothing nasty is happening!"
-        }))
+        })))
       }
       
       const sourceFile: string = data.filePath
