@@ -19,26 +19,18 @@ jobs:
       WORKDIR: ./application/backend
       REGISTRY: ghcr.io
       IMAGE_NAME: ${{ github.repository }}
-      APP_PORT: ${{ secrets.APP_PORT }}
       SSH_HOST: ${{ secrets.SSH_HOST }}
       SSH_USER: ${{ secrets.SSH_USER }}
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-      DB_IMAGE_NAME: ${{ secrets.DB_IMAGE_NAME }}
-      DB_HOST: ${{ secrets.DB_HOST }}
-      DB_PORT: ${{ secrets.DB_PORT }}
-      DATABASE_PATH: ${{ secrets.DATABASE_PATH }}
       DATABASE_URL: ${{ secrets.DATABASE_URL }} 
       API_KEY: ${{ secrets.API_KEY }}
-      MINIO_FIRST_PORT: ${{ secrets.MINIO_FIRST_PORT }}
-      MINIO_SECONDARY_PORT: ${{ secrets.MINIO_SECONDARY_PORT }}
       MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
       MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
       GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
       GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
       GOOGLE_REDIRECT_URI: ${{ secrets.GOOGLE_REDIRECT_URI }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
       CORS_ORIGIN: ${{ secrets.CORS_ORIGIN }}
-      JWT_EXPIRES_IN: ${{ secrets.JWT_EXPIRES_IN }}
-      SALT_RESULT: ${{ secrets.SALT_RESULT }}
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:

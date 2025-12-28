@@ -6,22 +6,41 @@ volumes:
     
 networks:
   node-app:
+
 services:
   minio:
     image: minio/minio
     container_name: minio
     restart: always
     ports:
-      - "127.0.0.1:${MINIO_FIRST_PORT}:${MINIO_FIRST_PORT}"
-      - "127.0.0.1:${MINIO_SECONDARY_PORT}:${MINIO_SECONDARY_PORT}"
+      - "127.0.0.1:9000:9000"
+      - "127.0.0.1:9001:9001"
     environment:
       MINIO_ROOT_USER: ${MINIO_ACCESS_KEY}
       MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY}
-    command: server /data --console-address ":${MINIO_SECONDARY_PORT}"
+    command: server /data --console-address ":9001"
     networks:
       - node-app
     volumes:
       - minio-data:/data
+
+  db:
+    image: postgres:16.6
+    restart: always
+    container_name: postgres
+    environment:
+      POSTGRES_USER: admin 
+      POSTGRES_DB: voice_memo
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - 127.0.0.1:5432:5432
+    networks:
+      - node-app
+    volumes:
+      - database-data:/var/lib/postgresql/data
+    labels:
+      - docker-volume-backup.stop-during-backup=true 
+
   app:
     build:
       context: .
@@ -30,24 +49,32 @@ services:
     container_name: voice-memo
     environment:
       NODE_ENV: production
-      PORT: ${APP_PORT}
+      PORT: 3333
+      
       DATABASE_URL: ${DATABASE_URL}
       API_KEY: ${API_KEY}
       JWT_SECRET: ${JWT_SECRET}
-      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN}
-      SALT_RESULT: ${SALT_RESULT}
+      
+      # Jwt
+      JWT_EXPIRES_IN: 604800
+      SALT_RESULT: 10
+      
+      # MinIO
       MINIO_HOST: "minio"
-      MINIO_PORT: ${MINIO_SECONDARY_PORT}
+      MINIO_PORT: 9000
       MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+      
+      # Google
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
       GOOGLE_REDIRECT_URI: ${GOOGLE_REDIRECT_URI}
       CORS_ORIGIN: ${CORS_ORIGIN}
-    # depends_on:
-    #   - db
+      
+    depends_on:
+      - db
     ports:
-      - ${APP_PORT}:${APP_PORT}
+      - 3333:3333
     networks:
       - node-app
     restart: always
