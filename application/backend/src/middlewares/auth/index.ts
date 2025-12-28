@@ -3,7 +3,7 @@ import { IToken } from "@models/auth";
 import { AppError } from "@shared/app-error";
 import { env } from "@shared/env";
 import { NextFunction, Request, Response } from "express";
-import * as jwt from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 
 declare global {
   namespace Express {

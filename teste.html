@@ -8,17 +8,12 @@
     <style>
         :root { --primary: #6366f1; --bg: #f8fafc; --text: #334155; }
         body { font-family: 'Segoe UI', sans-serif; padding: 2rem; max-width: 900px; margin: 0 auto; background: var(--bg); color: var(--text); }
-        
-        /* Layout em Grid */
         .grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
         @media (max-width: 700px) { .grid-container { grid-template-columns: 1fr; } }
-
         .card { background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 20px; }
         h2 { margin-top: 0; font-size: 1.2rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; color: var(--primary); }
-        
         label { display: block; margin: 10px 0 5px; font-weight: 600; font-size: 0.9rem; }
         input { width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; }
-        
         button { width: 100%; padding: 10px; margin-top: 15px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; color: white; transition: 0.2s; }
         .btn-primary { background-color: var(--primary); }
         .btn-primary:hover { background-color: #4f46e5; }
@@ -26,11 +21,9 @@
         .btn-rec { background-color: #ef4444; }
         .btn-stop { background-color: #334155; }
         button:disabled { opacity: 0.5; cursor: not-allowed; }
-
         .status-box { margin-top: 10px; padding: 10px; border-radius: 6px; font-size: 0.9rem; display: none; }
         .success { background: #dcfce7; color: #166534; }
         .error { background: #fee2e2; color: #991b1b; }
-        
         pre { background: #1e293b; color: #e2e8f0; padding: 1rem; border-radius: 8px; overflow-x: auto; font-size: 0.8rem; height: 150px; }
     </style>
 </head>
@@ -109,7 +102,6 @@
     let mediaRecorder;
     let audioChunks = [];
 
-    // --- FUNÇÕES DE AJUDA ---
     const getUrl = () => document.getElementById('apiUrl').value.replace(/\/$/, "");
     const log = (msg) => {
         const el = document.getElementById('logs');
@@ -122,7 +114,6 @@
         el.className = `status-box ${type}`;
     };
 
-    // --- 1. CADASTRO ---
     async function handleRegister(e) {
         e.preventDefault();
         const name = document.getElementById('regName').value;
@@ -147,7 +138,6 @@
         }
     }
 
-    // --- 2. LOGIN EMAIL ---
     async function handleLogin(e) {
         e.preventDefault();
         const email = document.getElementById('loginEmail').value;
@@ -164,14 +154,13 @@
             const data = await res.json();
             if (!res.ok) throw new Error(data.message || 'Erro no login');
 
-            // Ajuste conforme o retorno do seu backend (data.token ou data.accessToken)
-            saveToken(data.token || data.accessToken);
+            const token = data.data?.token || data.token || data.accessToken;
+            saveToken(token);
         } catch (err) {
             setStatus('loginStatus', '❌ ' + err.message, 'error');
         }
     }
 
-    // --- 3. LOGIN GOOGLE ---
     function initGoogleLogin() {
         const clientId = document.getElementById('googleClientId').value;
         if (!clientId) return alert("Preencha o Client ID nas configurações acima!");
@@ -198,25 +187,16 @@
                 body: JSON.stringify({ code })
             });
 
-            const rawText = await res.text();
-            console.log("Resposta Bruta do Servidor:", rawText); 
-
-            if (!res.ok) {
-                throw new Error(`Erro ${res.status}: ${rawText.substring(0, 100)}...`);
-            }
-
-            try {
-                const data = JSON.parse(rawText);
-                saveToken(data.token || data.accessToken);
-            } catch (jsonErr) {
-                throw new Error("O servidor não retornou JSON. Veja o console.");
-            }
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message || 'Falha Google Auth');
+            
+            const token = data.data?.token || data.token || data.accessToken;
+            saveToken(token);
         } catch (err) {
             setStatus('loginStatus', '❌ Google Erro: ' + err.message, 'error');
         }
     }
 
-    // --- 4. GERENCIAR TOKEN ---
     function saveToken(token) {
         if (!token) return setStatus('loginStatus', '❌ Token não veio na resposta', 'error');
         
@@ -227,7 +207,6 @@
         log('Autenticado com sucesso.');
     }
 
-    // --- 5. GRAVAÇÃO ---
     async function startRecording() {
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
