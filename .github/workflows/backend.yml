@@ -64,6 +64,14 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
 
+      - name: Build and Push Migrator
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ env.WORKDIR }}
+          push: true
+          target: build
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:migrator
+
       - name: Deploy through SSH Pipe 
         run: |
           export IMAGE_NAME=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}

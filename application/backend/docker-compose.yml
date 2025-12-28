@@ -41,10 +41,7 @@ services:
     labels:
       - docker-volume-backup.stop-during-backup=true
   migrator:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: build
+    image: ${IMAGE_NAME}:migrator
     container_name: voice-memo-migrator
     command: npx prisma db push
     environment:
