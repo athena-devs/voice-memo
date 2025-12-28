@@ -3,108 +3,269 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teste VoiceMemo</title>
+    <title>VoiceMemo - Teste Completo</title>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
-        body { font-family: sans-serif; padding: 2rem; max-width: 600px; margin: 0 auto; background: #f4f4f9; }
-        .container { background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        button { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 1rem; margin-right: 10px; }
-        #btnRec { background-color: #e74c3c; color: white; }
-        #btnStop { background-color: #34495e; color: white; }
-        #btnRec:disabled, #btnStop:disabled { background-color: #bdc3c7; cursor: not-allowed; }
-        #status { margin-top: 1rem; font-weight: bold; }
-        pre { background: #eee; padding: 1rem; border-radius: 5px; overflow-x: auto; white-space: pre-wrap;}
+        :root { --primary: #6366f1; --bg: #f8fafc; --text: #334155; }
+        body { font-family: 'Segoe UI', sans-serif; padding: 2rem; max-width: 900px; margin: 0 auto; background: var(--bg); color: var(--text); }
+        
+        /* Layout em Grid */
+        .grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        @media (max-width: 700px) { .grid-container { grid-template-columns: 1fr; } }
+
+        .card { background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        h2 { margin-top: 0; font-size: 1.2rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; color: var(--primary); }
+        
+        label { display: block; margin: 10px 0 5px; font-weight: 600; font-size: 0.9rem; }
+        input { width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; }
+        
+        button { width: 100%; padding: 10px; margin-top: 15px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; color: white; transition: 0.2s; }
+        .btn-primary { background-color: var(--primary); }
+        .btn-primary:hover { background-color: #4f46e5; }
+        .btn-google { background-color: #db4437; }
+        .btn-rec { background-color: #ef4444; }
+        .btn-stop { background-color: #334155; }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .status-box { margin-top: 10px; padding: 10px; border-radius: 6px; font-size: 0.9rem; display: none; }
+        .success { background: #dcfce7; color: #166534; }
+        .error { background: #fee2e2; color: #991b1b; }
+        
+        pre { background: #1e293b; color: #e2e8f0; padding: 1rem; border-radius: 8px; overflow-x: auto; font-size: 0.8rem; height: 150px; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>🎙️ Teste de Upload</h1>
-    <p>Grave um áudio para testar a integração com a Groq.</p>
-
-    <div>
-        <button id="btnRec">🔴 Gravar</button>
-        <button id="btnStop" disabled>⏹️ Parar & Enviar</button>
+    <div class="card">
+        <h2>⚙️ Configuração Global</h2>
+        <div style="display: flex; gap: 10px;">
+            <div style="flex: 1;">
+                <label>URL da API</label>
+                <input type="text" id="apiUrl" value="http://localhost:3333">
+            </div>
+            <div style="flex: 1;">
+                <label>Google Client ID (Opcional para Google Login)</label>
+                <input type="text" id="googleClientId" placeholder="Cole seu Client ID aqui">
+            </div>
+        </div>
+        <div id="tokenDisplay" style="margin-top: 10px; font-size: 0.8rem; color: #64748b; word-break: break-all;">Token: Nenhum</div>
     </div>
 
-    <div id="status">Aguardando...</div>
+    <div class="grid-container">
+        <div>
+            <div class="card">
+                <h2>📝 1. Cadastro (Sign Up)</h2>
+                <form onsubmit="handleRegister(event)">
+                    <label>Nome (max 50)</label>
+                    <input type="text" id="regName" required maxlength="50">
+                    <label>Email (max 25)</label>
+                    <input type="email" id="regEmail" required maxlength="25">
+                    <label>Senha (min 6)</label>
+                    <input type="password" id="regPass" required minlength="6">
+                    <button type="submit" class="btn-primary">Criar Conta</button>
+                    <div id="regStatus" class="status-box"></div>
+                </form>
+            </div>
 
-    <h3>Resposta do Backend:</h3>
-    <pre id="output">...</pre>
-</div>
+            <div class="card">
+                <h2>🔑 2. Login</h2>
+                
+                <form onsubmit="handleLogin(event)">
+                    <label>Email</label>
+                    <input type="email" id="loginEmail" required>
+                    <label>Senha</label>
+                    <input type="password" id="loginPass" required>
+                    <button type="submit" class="btn-primary">Entrar com Email</button>
+                </form>
+
+                <div style="text-align: center; margin: 10px 0;">OU</div>
+
+                <button onclick="initGoogleLogin()" class="btn-google">G Entrar com Google</button>
+                
+                <div id="loginStatus" class="status-box"></div>
+            </div>
+        </div>
+
+        <div>
+            <div class="card">
+                <h2>🎙️ 3. Gravação (Protegido)</h2>
+                <p style="font-size: 0.9rem; color: #666;">Requer token de login válido.</p>
+                
+                <button id="btnRec" class="btn-rec" onclick="startRecording()" disabled>🔴 Gravar</button>
+                <button id="btnStop" class="btn-stop" onclick="stopRecording()" disabled>⏹️ Parar & Enviar</button>
+                
+                <div id="recStatus" class="status-box"></div>
+            </div>
+
+            <div class="card">
+                <h2>📡 Logs do Sistema</h2>
+                <pre id="logs">Aguardando ações...</pre>
+            </div>
+        </div>
+    </div>
 
 <script>
+    let authToken = null;
     let mediaRecorder;
     let audioChunks = [];
-    
-    const btnRec = document.getElementById('btnRec');
-    const btnStop = document.getElementById('btnStop');
-    const status = document.getElementById('status');
-    const output = document.getElementById('output');
 
-    const API_URL = 'http://localhost:8000/memos'; 
+    // --- FUNÇÕES DE AJUDA ---
+    const getUrl = () => document.getElementById('apiUrl').value.replace(/\/$/, "");
+    const log = (msg) => {
+        const el = document.getElementById('logs');
+        el.innerText = `[${new Date().toLocaleTimeString()}] ${msg}\n` + el.innerText;
+    };
+    const setStatus = (id, msg, type) => {
+        const el = document.getElementById(id);
+        el.innerText = msg;
+        el.style.display = 'block';
+        el.className = `status-box ${type}`;
+    };
 
-    btnRec.onclick = async () => {
+    // --- 1. CADASTRO ---
+    async function handleRegister(e) {
+        e.preventDefault();
+        const name = document.getElementById('regName').value;
+        const email = document.getElementById('regEmail').value;
+        const password = document.getElementById('regPass').value;
+
+        try {
+            log('Iniciando cadastro...');
+            const res = await fetch(`${getUrl()}/users`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, password })
+            });
+            
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message || JSON.stringify(data));
+            
+            setStatus('regStatus', '✅ Usuário criado! Faça login.', 'success');
+            log('Cadastro sucesso: ' + JSON.stringify(data));
+        } catch (err) {
+            setStatus('regStatus', '❌ Erro: ' + err.message, 'error');
+        }
+    }
+
+    // --- 2. LOGIN EMAIL ---
+    async function handleLogin(e) {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPass').value;
+
+        try {
+            log('Tentando login email...');
+            const res = await fetch(`${getUrl()}/auth/email`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+            
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message || 'Erro no login');
+
+            // Ajuste conforme o retorno do seu backend (data.token ou data.accessToken)
+            saveToken(data.token || data.accessToken);
+        } catch (err) {
+            setStatus('loginStatus', '❌ ' + err.message, 'error');
+        }
+    }
+
+    // --- 3. LOGIN GOOGLE ---
+    function initGoogleLogin() {
+        const clientId = document.getElementById('googleClientId').value;
+        if (!clientId) return alert("Preencha o Client ID nas configurações acima!");
+
+        const client = google.accounts.oauth2.initCodeClient({
+            client_id: clientId,
+            scope: 'email profile',
+            ux_mode: 'popup',
+            callback: (response) => {
+                if (response.code) {
+                    exchangeGoogleCode(response.code);
+                }
+            },
+        });
+        client.requestCode();
+    }
+
+    async function exchangeGoogleCode(code) {
+        try {
+            log('Trocando código Google por token...');
+            const res = await fetch(`${getUrl()}/auth/google`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code })
+            });
+
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message || 'Falha Google Auth');
+            
+            saveToken(data.token || data.accessToken);
+        } catch (err) {
+            setStatus('loginStatus', '❌ Google Erro: ' + err.message, 'error');
+        }
+    }
+
+    // --- 4. GERENCIAR TOKEN ---
+    function saveToken(token) {
+        if (!token) return setStatus('loginStatus', '❌ Token não veio na resposta', 'error');
+        
+        authToken = token;
+        document.getElementById('tokenDisplay').innerText = `Token Atual: ${token.substring(0, 20)}...`;
+        setStatus('loginStatus', '✅ Login realizado com sucesso!', 'success');
+        document.getElementById('btnRec').disabled = false;
+        log('Autenticado com sucesso.');
+    }
+
+    // --- 5. GRAVAÇÃO ---
+    async function startRecording() {
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            
-            const options = { mimeType: 'audio/webm' }; 
-            mediaRecorder = new MediaRecorder(stream, options);
-
-            mediaRecorder.start();
+            mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
             audioChunks = [];
+            
+            mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+            mediaRecorder.onstop = uploadRecording;
+            mediaRecorder.start();
 
-            mediaRecorder.ondataavailable = event => {
-                audioChunks.push(event.data);
-            };
-
-            mediaRecorder.onstop = async () => {
-                status.innerText = "Processando upload...";
-                
-                const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-                
-                const formData = new FormData();
-                formData.append('audio', audioBlob, 'recording.webm'); 
-                
-                try {
-                    const response = await fetch(API_URL, {
-                        method: 'POST',
-                        body: formData
-                    });
-
-                    const result = await response.json();
-                    
-                    if (response.ok) {
-                        status.innerText = "✅ Sucesso!";
-                        status.style.color = "green";
-                    } else {
-                        status.innerText = "❌ Erro no Backend";
-                        status.style.color = "red";
-                    }
-
-                    output.innerText = JSON.stringify(result, null, 2);
-
-                } catch (error) {
-                    status.innerText = "❌ Erro de Conexão";
-                    output.innerText = error.toString();
-                }
-            };
-
-            btnRec.disabled = true;
-            btnStop.disabled = false;
-            status.innerText = "Gravando... (Fale algo)";
-            status.style.color = "red";
-
+            document.getElementById('btnRec').disabled = true;
+            document.getElementById('btnStop').disabled = false;
+            setStatus('recStatus', 'Gravando...', 'success');
         } catch (err) {
-            console.error(err);
-            status.innerText = "Erro ao acessar microfone: " + err.message;
+            alert("Microfone bloqueado ou indisponível");
         }
-    };
+    }
 
-    btnStop.onclick = () => {
+    function stopRecording() {
         mediaRecorder.stop();
-        btnRec.disabled = false;
-        btnStop.disabled = true;
-    };
+        document.getElementById('btnRec').disabled = false;
+        document.getElementById('btnStop').disabled = true;
+    }
+
+    async function uploadRecording() {
+        setStatus('recStatus', 'Enviando...', 'success');
+        const blob = new Blob(audioChunks, { type: 'audio/webm' });
+        const formData = new FormData();
+        formData.append('audio', blob, 'teste.webm');
+
+        try {
+            const res = await fetch(`${getUrl()}/memos`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${authToken}` },
+                body: formData
+            });
+            
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message);
+            
+            setStatus('recStatus', '✅ Memo Enviado!', 'success');
+            log('Upload Sucesso: ' + JSON.stringify(data, null, 2));
+        } catch (err) {
+            setStatus('recStatus', '❌ Erro Upload: ' + err.message, 'error');
+            log('Erro Upload: ' + err.message);
+        }
+    }
 </script>
 
 </body>
