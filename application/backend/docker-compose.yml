@@ -7,27 +7,13 @@ volumes:
 networks:
   node-app:
 services:
-  db:
-    image: hibitdev/sqlite:latest
-    restart: always
-    container_name: sqlite
-    hostname: ${DB_HOST}
-    ports:
-      - ${DB_PORT}:${DB_PORT}
-    networks:
-      - node-app
-    volumes:
-      - database-data:${DATABASE_PATH}
-    labels:
-      - docker-volume-backup.stop-during-backup=true # Important for backup
-    command: ["tail", "-f", "/dev/null"]
   minio:
     image: minio/minio
     container_name: minio
     restart: always
     ports:
-      - "${MINIO_FIRST_PORT}:${MINIO_FIRST_PORT}"
-      - "${MINIO_SECONDARY_PORT}:${MINIO_SECONDARY_PORT}"
+      - "127.0.0.1:${MINIO_FIRST_PORT}:${MINIO_FIRST_PORT}"
+      - "127.0.0.1:${MINIO_SECONDARY_PORT}:${MINIO_SECONDARY_PORT}"
     environment:
       MINIO_ROOT_USER: ${MINIO_ACCESS_KEY}
       MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY}
@@ -42,8 +28,8 @@ services:
       dockerfile: Dockerfile
     image: ${IMAGE_NAME}:${VERSION}
     container_name: voice-memo
-    depends_on:
-      - db
+    # depends_on:
+    #   - db
     ports:
       - ${APP_PORT}:${APP_PORT}
     networks:
