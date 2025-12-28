@@ -39,8 +39,20 @@ services:
     volumes:
       - database-data:/var/lib/postgresql/data
     labels:
-      - docker-volume-backup.stop-during-backup=true 
-
+      - docker-volume-backup.stop-during-backup=true
+  migrator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: build
+    container_name: voice-memo-migrator
+    command: npx prisma db push
+    environment:
+      DATABASE_URL: ${DATABASE_URL} 
+    depends_on:
+      - db
+    networks:
+      - node-app
   app:
     build:
       context: .
@@ -72,7 +84,10 @@ services:
       CORS_ORIGIN: ${CORS_ORIGIN}
       
     depends_on:
-      - db
+      migrator:
+        condition: service_completed_successfully
+      db:
+        condition: service_started
     ports:
       - 3333:3333
     networks:
