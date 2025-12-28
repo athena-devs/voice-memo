@@ -27,7 +27,7 @@ export class MinioClient {
         console.log(JSON.stringify(responseFormat({
           statusCode: 201,
           message: "WARNING! A Bucket was created see if nothing nasty is happening!"
-        })))
+        }), null, 2))
       }
       
       const sourceFile: string = data.filePath
