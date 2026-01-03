@@ -24,7 +24,7 @@ This project was built following **Clean Architecture** principles to ensure dec
 * **Sidecar Migration Pattern:** Implemented an ephemeral migrator container pattern. Since the main application container is Distroless (and cannot run shell commands), a separate container handles database migrations (prisma db push) before the app starts, ensuring security without sacrificing automation.  
 * **CI/CD:** Automated pipelines configured via GitHub Actions for backend integrity checks.
 
-### 🏗️ Architecture Diagram
+### 📐 Architecture Diagram
 ```mermaid
 graph TD
     %% Actors and Clients
