@@ -47,9 +47,9 @@ graph TD
     end
 
     %% Styling (Optional)
-    classDef container fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
-    classDef storage fill:#fff3e0,stroke:#e65100,stroke-width:2px;
-    classDef external fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,stroke-dasharray: 5 5;
+    classDef container fill:#bd93f9,stroke:#44475a,stroke-width:2px,color:#282a36,font-weight:bold;
+    classDef storage fill:#f1fa8c,stroke:#ffb86c,stroke-width:2px,color:#282a36;
+    classDef external fill:#6272a4,stroke:#f8f8f2,stroke-width:2px,stroke-dasharray: 5 5,color:#f8f8f2;
     
     class API,Migrator container;
     class MinIO,DB storage;
