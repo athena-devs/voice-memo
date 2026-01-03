@@ -24,6 +24,38 @@ This project was built following **Clean Architecture** principles to ensure dec
 * **Sidecar Migration Pattern:** Implemented an ephemeral migrator container pattern. Since the main application container is Distroless (and cannot run shell commands), a separate container handles database migrations (prisma db push) before the app starts, ensuring security without sacrificing automation.  
 * **CI/CD:** Automated pipelines configured via GitHub Actions for backend integrity checks.
 
+### 🏗️ Architecture Diagram
+```mermaid
+graph TD
+    %% Actors and Clients
+    User((User)) -->|Access| Client["Frontend / SPA"]
+    Client -->|HTTP / REST| API["Node.js API<br/>(Distroless Image)"]
+
+    %% Docker Infrastructure
+    subgraph DockerEnv ["Docker Infrastructure"]
+        direction TB
+        API -->|1. Upload Audio| MinIO["MinIO Storage<br/>(S3 Compatible)"]
+        API -->|3. Save Metadata| DB[("PostgreSQL")]
+        
+        %% Sidecar Pattern
+        Migrator["Sidecar Migrator<br/>(Ephemeral Container)"] -.->|Init / Migrations| DB
+    end
+
+    %% External Services
+    subgraph ExternalAI ["External AI"]
+        API -->|2. Transcribe Audio| Groq["Groq AI Cloud<br/>(Whisper Model)"]
+    end
+
+    %% Styling (Optional)
+    classDef container fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
+    classDef storage fill:#fff3e0,stroke:#e65100,stroke-width:2px;
+    classDef external fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,stroke-dasharray: 5 5;
+    
+    class API,Migrator container;
+    class MinIO,DB storage;
+    class Groq external;
+```
+
 ## **✨ Key Features**
 
 * **Hybrid Authentication:** Sign up via Email/Password or One-Click Google Login.  
