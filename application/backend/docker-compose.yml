@@ -30,6 +30,8 @@ services:
     restart: unless-stopped
     ports:
       - "5080:5080"
+    networks:
+      - node-app
     volumes:
       - openobserve-data:/data
     environment:
