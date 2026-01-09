@@ -91,6 +91,11 @@ services:
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
       GOOGLE_REDIRECT_URI: ${GOOGLE_REDIRECT_URI}
       CORS_ORIGIN: ${CORS_ORIGIN}
+
+      # Openobserve
+      OTLP_AUTH_HEADER: ${OTLP_AUTH_HEADER}
+      OTLP_URL: "http://openobserve:5080/api/default/v1/traces"
+      OTLP_SERVICE_NAME: "voice-memo-backend"
       
     depends_on:
       migrator:
