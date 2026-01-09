@@ -17,6 +17,9 @@ const envSchema = z.object({
     GOOGLE_CLIENT_ID: z.string().default(""),
     GOOGLE_CLIENT_SECRET: z.string().default(""),
     GOOGLE_REDIRECT_URI: z.string().default(""),
+    OTLP_SERVICE_NAME: z.string().default("voice-memo-backend"),
+    OTLP_URL: z.string().default("http://localhost:5080/api/default/v1/traces"),
+    OTLP_AUTH_HEADER: z.string().optional(),
     CORS_ORIGIN: z.string().default("http://localhost:5500")
 })
 

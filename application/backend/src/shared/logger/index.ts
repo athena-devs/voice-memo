@@ -1,7 +1,10 @@
-import { Logger } from "tslog";
+import { Logger as TsLogger } from "tslog";
+import { env } from "@shared/env";
 
-export const logger = new Logger({
-  type: "pretty",
+const logType = env.NODE_ENV === "production" ? "json" : "pretty";
+
+const tsLogInstance = new TsLogger({
+  type: logType,
   parentNames: ["api"],
   name: "stack",
   hideLogPositionForProduction: true,
@@ -27,3 +30,22 @@ export const logger = new Logger({
     fileName: ["yellow"],
   },
 });
+
+export const logger = {
+  silly: tsLogInstance.silly.bind(tsLogInstance),
+  trace: tsLogInstance.trace.bind(tsLogInstance),
+  debug: tsLogInstance.debug.bind(tsLogInstance),
+  info: tsLogInstance.info.bind(tsLogInstance),
+  warn: tsLogInstance.warn.bind(tsLogInstance),
+  fatal: tsLogInstance.fatal.bind(tsLogInstance),
+
+  error: (message: string, error?: unknown) => {
+    if (env.NODE_ENV === "production") {
+       tsLogInstance.error(message, { err: error });
+    } else {
+       tsLogInstance.error(message, error);
+    }
+  },
+
+  native: tsLogInstance,
+};
