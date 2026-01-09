@@ -7,15 +7,25 @@ export class TelemetryClient {
   private sdk: NodeSDK | null = null
   private readonly otlpUrl: string
   private readonly serviceName: string
+  private readonly authHeader: string
 
   constructor() {
     this.otlpUrl = env.OTLP_URL;
     this.serviceName = env.OTLP_SERVICE_NAME;
+    this.authHeader = env.OTLP_AUTH_HEADER;
   }
 
   public start() {
+    // To fit on header pattern
+    const headersMap: Record<string, string> = {};
+
+    if (this.authHeader) {
+      headersMap['Authorization'] = this.authHeader;
+    }
+
     const traceExporter = new OTLPTraceExporter({
       url: this.otlpUrl,
+      headers: headersMap
     });
 
     this.sdk = new NodeSDK({
@@ -30,7 +40,7 @@ export class TelemetryClient {
     // Graceful Shutdown
     process.on("SIGTERM", () => {
       this.sdk?.shutdown()
-        .then(() => console.log("Telemetria encerrada"))
+        .then(() => console.log("Finished telemetry"))
         .finally(() => process.exit(0));
     });
   }
