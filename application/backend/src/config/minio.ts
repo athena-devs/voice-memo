@@ -1,6 +1,7 @@
 import { ICreateMemoInput } from '@models/memo'
 import { AppError } from '@shared/app-error'
 import { env } from '@shared/env'
+import { logger } from '@shared/logger'
 import { responseFormat } from '@shared/response-format'
 import * as Minio from 'minio'
 
@@ -24,10 +25,10 @@ export class MinioClient {
     
       if (!exists) {
         await this.client.makeBucket(this.bucketName, "sa-east-1")
-        console.log(JSON.stringify(responseFormat({
-          statusCode: 201,
-          message: "WARNING! A Bucket was created see if nothing nasty is happening!"
-        }), null, 2))
+        logger.warn({ 
+           statusCode: 201, 
+           bucket: this.bucketName 
+        }, "WARNING! A Bucket was created see if nothing nasty is happening!")
       }
       
       const sourceFile: string = data.filePath

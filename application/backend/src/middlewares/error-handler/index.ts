@@ -13,16 +13,17 @@ export const errorHandler = (
   logger.error(`ERROR: ${error.statusCode} - ${error.message}`)
 
   if (error instanceof AppError) {
-    return response.status(error.statusCode).json(
+    response.status(error.statusCode).json(
       responseFormat({
         statusCode: error.statusCode,
         message: error.message,
         data: null,
       }),
     )
+    return
   }
 
-  return response.status(500).json(
+  response.status(500).json(
     responseFormat({
       message: error.message,
       statusCode: 500,
@@ -30,4 +31,3 @@ export const errorHandler = (
     }),
   )
 }
-
