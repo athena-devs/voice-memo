@@ -2,15 +2,15 @@
   "name": "voice-memo",
   "version": "1.0.0",
   "type": "module",
-  "main": "./dist/app.js",
+  "main": "./dist/server.js",
   "exports": {
     ".": {
-      "types": "./dist/app.d.ts",
-      "import": "./dist/app.js"
+      "types": "./dist/server.d.ts",
+      "import": "./dist/server.js"
     }
   },
   "scripts": {
-    "dev": "tsx watch --inspect src/app.ts",
+    "dev": "tsx watch --inspect src/server.ts",
     "build": "pkgroll"
   },
   "author": "Saymon Macedo",

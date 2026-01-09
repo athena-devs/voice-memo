@@ -28,4 +28,4 @@ COPY --from=build /build/package.json ./package.json
 
 EXPOSE $PORT
 
-CMD [ "dist/app.js" ]
+CMD [ "dist/server.js" ]
