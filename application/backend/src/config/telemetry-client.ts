@@ -2,6 +2,7 @@ import { NodeSDK } from "@opentelemetry/sdk-node";
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
 import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node";
 import { env } from "@shared/env";
+import { logger } from "@shared/logger";
 
 export class TelemetryClient {
   private sdk: NodeSDK | null = null
@@ -35,12 +36,12 @@ export class TelemetryClient {
     });
 
     this.sdk.start();
-    console.log(`Telemetry initialized for service: ${this.serviceName}`);
+    logger.info(`Telemetry initialized for service: ${this.serviceName}`);
 
     // Graceful Shutdown
     process.on("SIGTERM", () => {
       this.sdk?.shutdown()
-        .then(() => console.log("Finished telemetry"))
+        .then(() => logger.info("Finished telemetry"))
         .finally(() => process.exit(0));
     });
   }
