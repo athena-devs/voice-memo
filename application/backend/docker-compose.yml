@@ -29,7 +29,7 @@ services:
     container_name: openobserve
     restart: unless-stopped
     ports:
-      - "127.0.0.1:5080:5080"
+      - "5080:5080"
     volumes:
       - openobserve-data:/data
     environment:
