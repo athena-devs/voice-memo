@@ -1,8 +1,8 @@
+import { TelemetryClient } from '@config/telemetry-client'
 import { env } from '@shared/env'
 import express from 'express'
 import cors from "cors"
 import { appRouter } from './routes/index'
-import { TelemetryClient } from '@config/telemetry-client'
 import { errorHandler } from '@middlewares/error-handler'
 
 const telemetry = new TelemetryClient() 

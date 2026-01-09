@@ -10,7 +10,8 @@ export const errorHandler = (
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   next: NextFunction,
 ) => {
-  logger.error(`ERROR: ${error.statusCode} - ${error.message}`)
+  
+  logger.error(`ERROR: ${error.statusCode} - ${error.message}`, error)
 
   if (error instanceof AppError) {
     response.status(error.statusCode).json(
