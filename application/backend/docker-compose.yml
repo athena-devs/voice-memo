@@ -29,7 +29,7 @@ services:
     container_name: openobserve
     restart: unless-stopped
     volumes:
-      - openobserve_data:/data
+      - openobserve-data:/data
     environment:
       - ZO_DATA_DIR=/data
       - ZO_ROOT_USER_EMAIL=${OBS_EMAIL}

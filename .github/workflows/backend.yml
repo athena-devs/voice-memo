@@ -31,6 +31,8 @@ jobs:
       GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
       GOOGLE_REDIRECT_URI: ${{ secrets.GOOGLE_REDIRECT_URI }}
       JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      OBS_EMAIL: ${{ secrets.OBS_EMAIL }}
+      OBS_PASSWORD: ${{ secrets.OBS_PASSWORD }}
       CORS_ORIGIN: ${{ secrets.CORS_ORIGIN }}
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
