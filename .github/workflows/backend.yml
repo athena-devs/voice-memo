@@ -33,6 +33,7 @@ jobs:
       JWT_SECRET: ${{ secrets.JWT_SECRET }}
       OBS_EMAIL: ${{ secrets.OBS_EMAIL }}
       OBS_PASSWORD: ${{ secrets.OBS_PASSWORD }}
+      OTLP_AUTH_HEADER: ${{ secrets.OTLP_AUTH_HEADER }}
       CORS_ORIGIN: ${{ secrets.CORS_ORIGIN }}
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
