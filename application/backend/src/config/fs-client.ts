@@ -6,20 +6,20 @@ export class FsClient {
     return fs.createReadStream(streamFile)
   }
 
-  rename(path: string, streamFile: string) {
-    if (fs.existsSync(streamFile) && fs.existsSync(path)) {
-        fs.renameSync(path, streamFile)
-    }else {
-        throw new AppError("Error verifing if files exists", 500)
+  rename(srcPath: string, destPath: string) {
+    if (fs.existsSync(srcPath)) {
+        fs.renameSync(srcPath, destPath)
+    } else {
+        throw new AppError(`File not found for rename. Source: ${srcPath}, Dest: ${destPath}`, 500)
     }    
   }
 
   delete(path: string, streamFile: string) {
-    if (fs.existsSync(streamFile) && fs.existsSync(path)) {
-        fs.unlinkSync(path)
-        fs.unlinkSync(streamFile);
-    }else {
-        throw new AppError("Error verifing if files exists", 500)
+    try {
+        if (fs.existsSync(path)) fs.unlinkSync(path);
+        if (fs.existsSync(streamFile)) fs.unlinkSync(streamFile);
+    } catch (error) {
+        throw new AppError(`Error deleting files: ${error}`, 500)
     }
   }
 }
