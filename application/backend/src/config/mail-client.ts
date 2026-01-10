@@ -13,6 +13,7 @@ export class MailClient {
       requireTLS: true,
       tls: {
         ciphers: "SSLv3",
+        rejectUnauthorized: false
       },
       auth: {
         user: env.MAIL_USER,
