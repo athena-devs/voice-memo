@@ -24,7 +24,7 @@ export class UserController {
     getUser = async (request: Request, response: Response) => {
         const getUser = this.factory.makeUsersGetUseCase()
         const { id } = this.data.verifyId(request.params.id)
-        const user = await getUser.execute(request.params.id)
+        const user = await getUser.execute(id)
         
         return response.status(200).send(user)
     }
@@ -37,6 +37,14 @@ export class UserController {
         
         return response.status(200).send(user)
     }
+
+    forgotPassword = async (request: Request, response: Response) => {
+        const getPayload = this.factory.makeUsersForgotPasswordUseCase()
+        const { email } = this.data.verifyEmail(request.body.email)
+        const user = await getPayload.execute(email)
+        
+        return response.status(200).send(user)
+    } 
 
     deleteUser = async (request: Request, response: Response) => {
         const deleteUser = this.factory.makeUsersDeleteUseCase()

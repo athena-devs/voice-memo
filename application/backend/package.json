@@ -32,6 +32,7 @@
     "jsonwebtoken": "^9.0.3",
     "minio": "^8.0.6",
     "multer": "^2.0.2",
+    "nodemailer": "^7.0.12",
     "prisma": "^6.7.0",
     "tslog": "^4.10.2",
     "typescript": "^5.8.3",
@@ -43,6 +44,7 @@
     "@types/express": "^5.0.1",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^22.15.15",
+    "@types/nodemailer": "^7.0.4",
     "pkgroll": "^2.21.4",
     "tsx": "^4.19.4"
   }

@@ -119,4 +119,13 @@ export class VerifyData {
 
         return schema.parse({ id });
     }
+
+    verifyEmail(email: string) {
+        const schema = z.object({
+            email: z.email()
+        });
+
+        return schema.parse({ email });
+    }
+
 }

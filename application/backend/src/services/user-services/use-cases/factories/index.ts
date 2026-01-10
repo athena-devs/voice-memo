@@ -1,5 +1,5 @@
 import { PrismaUsersRepository } from "@services/user-services/repositories/prisma";
-import { UsersCreateUseCase, UsersGetUseCase, UsersDeleteUseCase, UsersUpdateUseCase } from "@services/user-services/use-cases";
+import { UsersCreateUseCase, UsersGetUseCase, UsersDeleteUseCase, UsersUpdateUseCase, UsersForgotPasswordUseCase } from "@services/user-services/use-cases";
 import { tracer } from "@shared/tracer";
 
 export class UserFactory{
@@ -18,6 +18,11 @@ export class UserFactory{
     makeUsersGetUseCase() {
         const  usersGetUseCase = new UsersGetUseCase(this.prismaUsersRepository)
         return tracer("users-get-use-case", usersGetUseCase)
+    }
+
+    makeUsersForgotPasswordUseCase() {
+        const  usersForgotPasswordUseCase = new UsersForgotPasswordUseCase(this.prismaUsersRepository)
+        return tracer("users-forgotPassword-use-case", usersForgotPasswordUseCase)
     }
 
     makeUsersDeleteUseCase() {
