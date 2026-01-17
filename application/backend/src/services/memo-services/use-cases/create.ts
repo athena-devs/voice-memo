@@ -1,23 +1,23 @@
-import { IMemo, ICreateMemoInput } from "@models/memo";
+import { IMemo, ICreateMemoInput, IMemoCreate } from "@models/memo";
 import { MemosRepository } from "../repositories";
 import { MIME_TO_EXT } from "@shared/convert-extension";
 import { AppError } from "@shared/app-error";
 import { FsClient } from "@config/fs-client";
 import { MinioClient } from "@config/minio";
-import { AIClient } from "@config/ai-client";
+import { MqClient } from "@config/mq-client";
+import { logger } from "@shared/logger";
 
 export class MemosCreateUseCase {
-    private readonly minio: MinioClient
-    private readonly fs: FsClient
-    private readonly ai: AIClient 
-
     constructor(
-        private memosRepository: MemosRepository, private minioClient: MinioClient = new MinioClient, private fsClient: FsClient = new FsClient, private aiClient = new AIClient
+        private readonly memosRepository: MemosRepository, 
+        private readonly minioClient: MinioClient = new MinioClient, 
+        private readonly fsClient: FsClient = new FsClient, 
+        private readonly mqClient = new MqClient
     ) {    
         this.memosRepository = memosRepository
-        this.minio = minioClient
-        this.fs = fsClient
-        this.ai = aiClient
+        this.minioClient = minioClient
+        this.fsClient = fsClient
+        this.mqClient = mqClient
     }
   
     async execute(input: ICreateMemoInput): Promise<IMemo | AppError> {
@@ -26,40 +26,45 @@ export class MemosCreateUseCase {
         const streamPath = `${filePath}.${mime}`
 
         try {
-            this.fs.rename(filePath, streamPath)
-            const fileStream = this.fs.create(streamPath)
-
-            // Transcription
-            const transcripiton = await this.ai.createAudioDescription({
-                file: fileStream,
-                model: "whisper-large-v3",
-                responseFormat: "json",
-                language: "pt"
-            })
+            this.fsClient.rename(filePath, streamPath)
+            const fileStream = this.fsClient.create(streamPath)
             
             // Save on storage
-            const storage = await this.minio.upload({
+            const storage = await this.minioClient.upload({
                 filePath: streamPath,
                 mimetype: mime,
                 userId: input.userId
             })
             
             // Clean after save on minio
-            this.fs.delete(filePath, streamPath)
+            this.fsClient.delete(filePath, streamPath)
 
             // Create Memo
             const memo = await this.memosRepository.createMemo({
                 path: storage.data.dest,
-                summary: "",
-                text: transcripiton.text,
-                title: transcripiton.text.substring(0, 50) + "...",
+                summary: "Processing",
+                status: "PENDING",
+                text: "",
+                title: "New audio Memo",
                 userId: input.userId
-            }) 
+            })
+
+            if (memo instanceof AppError) {
+                logger.fatal("Error creating memo")
+                throw new AppError("Error creating memo", 500)
+            }
+            
+            // Send to queue
+            await this.mqClient.sendToTranscription({
+                fileKey: streamPath,
+                memoId: memo.id,
+                userId: input.userId
+            })
 
             return memo
 
         } catch (err: any) {
-            this.fs.delete(filePath, streamPath)
+            this.fsClient.delete(filePath, streamPath)
             throw new AppError(`Internal Server Error: ${err}`, 500)
         }
     }

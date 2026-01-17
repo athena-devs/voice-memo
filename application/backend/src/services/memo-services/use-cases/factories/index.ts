@@ -1,5 +1,5 @@
 import { PrismaMemosRepository } from "@services/memo-services/repositories/prisma";
-import { MemosCreateUseCase, MemoGetUseCase, MemosGetAllUseCase, MemosDeleteUseCase, MemosUpdateUseCase } from "@services/memo-services/use-cases";
+import { MemosCreateUseCase, MemoGetUseCase, MemosGetAllUseCase, MemosDeleteUseCase, MemosUpdateUseCase, MemosTranscribeAudioUseCase } from "@services/memo-services/use-cases";
 import { tracer } from "@shared/tracer";
 
 export class MemoFactories {
@@ -14,6 +14,12 @@ export class MemoFactories {
         const  memosUpdateUseCase = new MemosUpdateUseCase(this.prismaMemosRepository)
         return tracer("memos-update-use-case", memosUpdateUseCase)
     }
+
+    makeMemosTranscribeAudioUseCase() {
+        const  memosTranscribeAudioUseCase = new MemosTranscribeAudioUseCase(this.prismaMemosRepository)
+        return tracer("memos-transcribeAudio-use-case", memosTranscribeAudioUseCase)
+    }
+
 
     makeMemosGetAllUseCase() {
         const  memoGetUseCase = new MemosGetAllUseCase(this.prismaMemosRepository)

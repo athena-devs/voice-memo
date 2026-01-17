@@ -10,6 +10,7 @@ export class PrismaMemosRepository implements MemosRepository {
                 text: data.text,
                 title: data.title,
                 summary: data.summary,
+                status: data.status,
                 userId: data.userId
             }
         })
@@ -41,6 +42,7 @@ export class PrismaMemosRepository implements MemosRepository {
                 text: data.text,
                 title: data.title,
                 summary: data.summary,
+                status: data.status,
             }
         })
         

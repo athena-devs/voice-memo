@@ -56,7 +56,46 @@ export class MinioClient {
         data: response
       })
     } catch (err) {
+      logger.error("Error downloading file from MinIO", err);
       throw new AppError(`An error ocurried trying upload a audio: ${err}`, 500)
+    }
+  }
+
+  async download(fileKey: string) {
+    try {  
+      const exists = await this.client.bucketExists(this.bucketName)
+
+        if (!exists) {
+          logger.fatal({ 
+            statusCode: 500, 
+            bucket: this.bucketName 
+          }, "FATAL ERROR! Bucket doesn't exists")
+
+          throw new AppError("FATAL ERROR! Bucket doesn't exists", 500)
+        }
+
+        const dataStream = await this.client.getObject(this.bucketName, fileKey)
+
+        return dataStream
+    
+    } catch (err) {
+      logger.error("Error downloading file from MinIO", err);
+      throw new AppError(`An error ocurried trying download file from storage: ${err}`, 500)
+    }
+  }
+
+  async getAudioUrl(fileKey: string, expirySeconds: number = 3600) {
+    try {
+        // Generates Url
+        const url = await this.client.presignedGetObject(
+            this.bucketName, 
+            fileKey, 
+            expirySeconds
+        );
+        return url;
+      } catch (err) {
+      logger.error("Error generating a url for a file on MinIO", err);
+      throw new AppError(`An error ocurried trying generate a url for a file on storage: ${err}`, 500)
     }
   }
 }

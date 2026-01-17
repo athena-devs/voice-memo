@@ -1,8 +1,8 @@
-import { IMemo, IMemoUpdate } from "@models/memo"
+import { IMemo, IMemoCreate, IMemoUpdate } from "@models/memo"
 import { AppError } from "@shared/app-error"
 
 export interface MemosRepository {
-    createMemo(data: IMemo): Promise<IMemo | AppError>
+    createMemo(data: IMemoCreate): Promise<IMemo| AppError>
     getAllMemos(userId: string): Promise<IMemo[] | null>
     getMemo(id: string): Promise<IMemo | null>
     updateMemo(id: string, data: IMemoUpdate): Promise<IMemo | null>

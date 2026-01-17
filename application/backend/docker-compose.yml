@@ -54,6 +54,13 @@ services:
       - database-data:/var/lib/postgresql/data
     labels:
       - docker-volume-backup.stop-during-backup=true
+  redis:
+    image: redis:alpine
+    container_name: voice-memo-redis
+    ports:
+      - "127.0.0.1:6379:6379"
+    networks:
+      - node-app
   migrator:
     image: ${IMAGE_NAME}:migrator
     container_name: voice-memo-migrator

@@ -16,12 +16,18 @@ model User {
   createdAt DateTime @default(now())
   memos Memo[]
 }
+enum MemoStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
 
 model Memo {
   id        String   @id @default(uuid())
   title     String?  
-  text      String   
-  summary   String?  
+  text      String
+  summary   String?   
+  status    MemoStatus @default(PENDING)  
   path      String @unique
   
   createdAt DateTime @default(now())
