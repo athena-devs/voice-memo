@@ -115,8 +115,8 @@ services:
       MAIL_FROM : ${MAIL_FROM}
 
       # MQ
-      #MQ_HOST: ${MQ_HOST}
-      #MQ_PORT: ${MQ_PORT}
+      MQ_HOST: ${MQ_HOST}
+      MQ_PORT: ${MQ_PORT}
 
     depends_on:
       migrator:

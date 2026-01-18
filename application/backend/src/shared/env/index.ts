@@ -20,7 +20,7 @@ const envSchema = z.object({
     MAIL_PASS: z.string(),
     MAIL_FROM: z.string().default("Noreply <noreply@athena-devs.com>"),
     MAIL_SECURE: z.string().transform((val) => val === 'true').default(false),
-    MQ_HOST: z.string().default("http://voice-memo-redis"),
+    MQ_HOST: z.string().default("voice-memo-redis"),
     MQ_PORT: z.coerce.number().default(6379),
     GOOGLE_CLIENT_ID: z.string().default(""),
     GOOGLE_CLIENT_SECRET: z.string().default(""),
