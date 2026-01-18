@@ -106,6 +106,18 @@ services:
       OTLP_URL: "http://openobserve:5080/api/default/v1/traces"
       OTLP_SERVICE_NAME: "voice-memo-backend"
       
+      # Mail
+      MAIL_HOST : ${MAIL_HOST}
+      MAIL_USER : ${MAIL_USER}
+      MAIL_PASS : ${MAIL_PASS}
+      MAIL_PORT : ${MAIL_PORT:-587}
+      MAIL_SECURE : ${MAIL_SECURE:-false}
+      MAIL_FROM : ${MAIL_FROM}
+
+      # MQ
+      #MQ_HOST: ${MQ_HOST}
+      #MQ_PORT: ${MQ_PORT}
+
     depends_on:
       migrator:
         condition: service_completed_successfully
