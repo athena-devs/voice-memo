@@ -1,4 +1,4 @@
-import { ReadStream } from "fs"
+import { Readable } from "stream"
 
 export interface IMemo {
     id: string
@@ -33,7 +33,7 @@ export interface ICreateMemoInput {
 }
 
 export interface ITranscripitonMemo {
-    file: ReadStream, 
+    file: Readable, 
     model: string,
     responseFormat: 'json' | 'text' | 'verbose_json', 
     language: string
