@@ -56,7 +56,7 @@ export class MemosCreateUseCase {
             
             // Send to queue
             await this.mqClient.sendToTranscription({
-                fileKey: streamPath,
+                fileKey: memo.path,
                 memoId: memo.id,
                 userId: input.userId
             })
