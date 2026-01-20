@@ -6,3 +6,4 @@ database.db-journal
 migrations
 uploads
 dist/
+backend.http

@@ -7,7 +7,7 @@ const user = new UserController()
 
 export const userRoutes = Router()
 
-userRoutes.use(tryCatch(auth))
+userRoutes.use(auth)
 .post('/forgot-password/', tryCatch(user.forgotPassword))
 .get('/:id', tryCatch(user.getUser))
 .patch('/:id', tryCatch(user.updateUser))
