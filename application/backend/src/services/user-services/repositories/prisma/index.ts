@@ -9,14 +9,16 @@ export class PrismaUsersRepository implements UsersRepository {
                 name: data.name,
                 email: data.email,
                 password: data.password
-            }
+            },
+            select: SAFE_USER_SELECT
         })
         return user
     }
     
     async getUser(id: string): Promise<IUserResponseDTO | null> {
         const user = await prisma.user.findUnique({
-            where: {id}
+            where: {id},
+            select: SAFE_USER_SELECT
         }) 
         return user
     }
@@ -35,7 +37,9 @@ export class PrismaUsersRepository implements UsersRepository {
                 name: data.name,
                 email: data.email,
                 password: data.password
-            }
+            },
+            select: SAFE_USER_SELECT
+
         })
         return user
     }
@@ -47,3 +51,10 @@ export class PrismaUsersRepository implements UsersRepository {
     }
 
 }
+
+// Set safe selection to return just wanted data
+const SAFE_USER_SELECT = {
+    id: true,
+    name: true,
+    email: true,
+};
