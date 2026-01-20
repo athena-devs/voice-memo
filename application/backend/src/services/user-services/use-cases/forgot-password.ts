@@ -27,7 +27,7 @@ export class UsersForgotPasswordUseCase {
         
         // Send mail
         const html = template(user.name, code)
-        this.mail.sendMail(email, "", html)
+        this.mail.sendMail(email, "Recovery Code", html)
 
         // Give response with code to front-end
         const payload = {user: user, code: code}
