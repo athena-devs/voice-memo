@@ -58,7 +58,8 @@ export class MemosCreateUseCase {
             await this.mqClient.sendToTranscription({
                 fileKey: memo.path,
                 memoId: memo.id,
-                userId: input.userId
+                userId: input.userId,
+                language: input.language
             })
 
             return memo

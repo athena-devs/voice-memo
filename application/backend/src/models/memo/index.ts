@@ -30,22 +30,26 @@ export interface ICreateMemoInput {
     filePath: string;
     userId: string;
     mimetype: string;
+    language?: string;
 }
 
 export interface ITranscripitonMemo {
     file: Readable, 
     model: string,
     responseFormat: 'json' | 'text' | 'verbose_json', 
-    language: string
+    language?: string
 }
 
 export interface ITranscriptionJobData {
     memoId: string;
     fileKey: string;
     userId: string;
+    language?: string;
+    
 }
 
 export interface ITranscribeAudioInput {
     memoId: string;
     fileKey: string;
+    language?: string;
 }

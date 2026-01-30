@@ -18,7 +18,8 @@ export class MemosWorker {
 
                 await transcription.execute({
                     memoId: job.data.memoId,
-                    fileKey: job.data.fileKey
+                    fileKey: job.data.fileKey,
+                    language: job.data.language
                 });
 
                 logger.info(`[Worker] Job ${job.id} OK`);

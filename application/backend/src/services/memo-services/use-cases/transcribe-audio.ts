@@ -25,7 +25,7 @@ export class MemosTranscribeAudioUseCase {
                 file: fileStream,
                 model: "whisper-large-v3",
                 responseFormat: "json",
-                language: "pt"
+                language: data.language
             });
 
             // Update
@@ -39,4 +39,4 @@ export class MemosTranscribeAudioUseCase {
             throw new AppError(`Internal Server Error: ${err}`, 500)
         }
     }
-}
+}       
