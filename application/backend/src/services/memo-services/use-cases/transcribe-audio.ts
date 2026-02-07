@@ -3,6 +3,7 @@ import { MemosRepository } from "@services/memo-services/repositories";
 import { AIClient } from "@config/ai-client";
 import { MinioClient } from "@config/minio";
 import { AppError } from "@shared/app-error";
+import { logger } from "@shared/logger";
 
 export class MemosTranscribeAudioUseCase {
     constructor(
@@ -36,7 +37,8 @@ export class MemosTranscribeAudioUseCase {
                 status: "COMPLETED"
             });
 
-        } catch (err) {
+        } catch (err: any) {
+            logger.error("Internal Server error", err)
             throw new AppError(`Internal Server Error: ${err}`, 500)
         }
     }

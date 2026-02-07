@@ -2,6 +2,7 @@ import { AppError } from "@shared/app-error";
 import { env } from '@shared/env'
 import Groq, { toFile } from "groq-sdk";
 import { ITranscripitonMemo } from "@models/memo";
+import { logger } from "@shared/logger";
 
 export class AIClient {
     private readonly groq: Groq
@@ -23,6 +24,11 @@ export class AIClient {
 
             const buffer = await streamToBuffer(data.file);
             
+            // Check for not empty buffers
+            if (buffer.length === 0) {
+                throw new AppError("Audio file buffer is empty after download", 400);
+            }
+
             // Generate a file to AI api
             const outputFile = await toFile(buffer, 'audio-file.mp3');
 
@@ -34,23 +40,38 @@ export class AIClient {
             })
 
             const rawText = rawTranscription.text
+            
+            // If is not audible
+            if (!rawText || rawText.trim().length === 0) {
+                 return {
+                    title: "No content",
+                    summary_md: "Unable to detect voice on audio",
+                    action_items: [],
+                    raw_text: ""
+                }
+            }
 
+            // Tune audio
             const tuneTranscription = await this.groq.chat.completions.create({
                 model: "llama-3.1-8b-instant",
                 messages: [
                     {   role: "system", 
-                        content: `Você é um editor especialista.
-                        Analise a transcrição abaixo.
-                        Retorne APENAS um JSON válido com a seguinte estrutura, sem explicações adicionais:
-                        {
-                            "titulo": "Um título curto e relevante",
-                            "resumo_md": "Um resumo formatado em markdown",
-                            "action_items": ["Array de strings com tarefas ou pontos chave"]
-                        }`
+                        content: `You are an expert editor.
+                            Analyze the transcript below.
+                            Return ONLY a valid JSON with the following structure, without additional explanations:
+
+                            {
+                             "title": "A short and relevant title",
+
+                             "summary_md": "A summary formatted in markdown",
+
+                             "action_items": ["Array of strings with tasks or key points"]
+
+                            }`
                     },
                     { 
                         role: "user", 
-                        content: rawText // Passamos a string limpa
+                        content: rawText
                     }
                 ],
                 response_format: { type: "json_object" },
@@ -60,19 +81,33 @@ export class AIClient {
             const jsonContent = tuneTranscription.choices[0]?.message?.content
 
             if (!jsonContent) {
+                logger.error("Failed to generate refined content from AI")
                 throw new AppError("Failed to generate refined content from AI", 500);
             }
 
-            const parsedContent = JSON.parse(jsonContent)
-
+            let parsedContent;
+            
+            try {
+                parsedContent = JSON.parse(jsonContent)
+            } catch(err: any) {
+                console.error("Failed to parse AI JSON response:", jsonContent);
+                // Fallback seguro se o JSON quebrar
+                parsedContent = {
+                    title: "Resumo do Áudio",
+                    summary_md: rawText,
+                    action_items: []
+                };
+            }
+            
             return {
-                title: parsedContent.titulo,
-                summary_md: parsedContent.resumo_md,
+                title: parsedContent.title || "No title",
+                summary_md: parsedContent.summary_md || "",
                 action_items: parsedContent.action_items || [],
                 raw_text: rawText
             }
-            
+
         } catch (err) {
+            logger.error("An error happened fetching transcription api", err)
             throw new AppError(`An error happened fetching transcription api: ${err}`, 500)
         } 
     }
