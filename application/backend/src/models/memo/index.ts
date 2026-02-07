@@ -10,6 +10,13 @@ export interface IMemo {
     userId: string
 }
 
+export interface IRefinedMemo {
+    title: string;
+    summary_md: string;
+    action_items: string[];
+    raw_text: string;
+}
+
 export interface IMemoCreate {
     title: string | null
     status: string | null

@@ -30,8 +30,9 @@ export class MemosTranscribeAudioUseCase {
 
             // Update
             await this.memosRepository.updateMemo(data.memoId, {
-                text: transcription.text,
-                summary: transcription.text.substring(0, 50) + "...",
+                title: transcription.title,
+                text: transcription.raw_text,
+                summary: transcription.summary_md,
                 status: "COMPLETED"
             });
 
