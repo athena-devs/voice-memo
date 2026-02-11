@@ -10,6 +10,7 @@ volumes:
     name: openobserve-voice-memo  
 networks:
   node-app:
+    name: voice-memo
   global-net:
     external: true
 
