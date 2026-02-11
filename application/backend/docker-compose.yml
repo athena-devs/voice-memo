@@ -54,6 +54,11 @@ services:
       - database-data:/var/lib/postgresql/data
     labels:
       - docker-volume-backup.stop-during-backup=true
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d voice_memo"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
   redis:
     image: redis:alpine
     container_name: voice-memo-redis
@@ -66,7 +71,8 @@ services:
     environment:
       DATABASE_URL: ${DATABASE_URL} 
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     networks:
       - node-app
   app:
