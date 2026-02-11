@@ -2,6 +2,8 @@ FROM node:24.11.1-bookworm-slim AS build
 
 WORKDIR /build
 
+RUN apt-get update -y && apt-get install -y openssl
+
 COPY package.json package-lock.json ./
 
 RUN npm ci
