@@ -87,7 +87,7 @@ jobs:
           "docker login ghcr.io -u ${{ github.actor }} --password-stdin"
           
           envsubst < ${{ env.WORKDIR }}/docker-compose.yml | ssh ${{ env.SSH_USER }}@${{ env.SSH_HOST }} \
-          "docker compose -f - up -d --no-build --remove-orphans --force-recreate"
+          "docker compose -p backend-voice-memo -f - up -d --no-build --remove-orphans --force-recreate"
 
       - name: Clean old images
         uses: snok/container-retention-policy@v3.0.1

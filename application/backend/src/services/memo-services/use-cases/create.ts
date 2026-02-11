@@ -27,7 +27,6 @@ export class MemosCreateUseCase {
 
         try {
             this.fsClient.rename(filePath, streamPath)
-            const fileStream = this.fsClient.create(streamPath)
             
             // Save on storage
             const storage = await this.minioClient.upload({

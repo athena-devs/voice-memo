@@ -1,21 +1,23 @@
 volumes:
   database-data:
     driver: local
+    name: pg-voice-memo
   minio-data: 
     driver: local
+    name: minio-voice-memo
   openobserve-data:
-    driver: local  
+    driver: local
+    name: openobserve-voice-memo  
 networks:
   node-app:
+  global-net:
+    external: true
 
 services:
   minio:
     image: minio/minio
-    container_name: minio
+    container_name: voice-memo-minio
     restart: always
-    ports:
-      - "127.0.0.1:9000:9000"
-      - "127.0.0.1:9001:9001"
     environment:
       MINIO_ROOT_USER: ${MINIO_ACCESS_KEY}
       MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY}
@@ -28,10 +30,9 @@ services:
     image: public.ecr.aws/zinclabs/openobserve:latest
     container_name: openobserve
     restart: unless-stopped
-    ports:
-      - "5080:5080"
     networks:
       - node-app
+      - global-net
     volumes:
       - openobserve-data:/data
     environment:
@@ -41,13 +42,11 @@ services:
   db:
     image: postgres:16.6
     restart: always
-    container_name: postgres
+    container_name: voice-memo-postgres
     environment:
       POSTGRES_USER: admin 
       POSTGRES_DB: voice_memo
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-    ports:
-      - 127.0.0.1:5432:5432
     networks:
       - node-app
     volumes:
@@ -57,8 +56,6 @@ services:
   redis:
     image: redis:alpine
     container_name: voice-memo-redis
-    ports:
-      - "127.0.0.1:6379:6379"
     networks:
       - node-app
   migrator:
@@ -123,8 +120,7 @@ services:
         condition: service_completed_successfully
       db:
         condition: service_started
-    ports:
-      - 3333:3333
     networks:
       - node-app
+      - global-net
     restart: always
