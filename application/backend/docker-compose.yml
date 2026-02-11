@@ -41,7 +41,7 @@ services:
       - ZO_ROOT_USER_EMAIL=${OBS_EMAIL}
       - ZO_ROOT_USER_PASSWORD=${OBS_PASSWORD}
   db:
-    image: postgres:16.6
+    image: postgres:18.1
     restart: always
     container_name: voice-memo-postgres
     environment:
