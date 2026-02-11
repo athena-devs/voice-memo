@@ -126,7 +126,7 @@ services:
       migrator:
         condition: service_completed_successfully
       db:
-        condition: service_started
+        condition: service_healthy
     networks:
       - node-app
       - global-net
