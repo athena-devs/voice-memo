@@ -1,4 +1,4 @@
-FROM node:24.11.1-bookworm-slim AS build
+FROM cgr.dev/chainguard/node AS build
 
 WORKDIR /build
 
