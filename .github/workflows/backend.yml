@@ -154,7 +154,7 @@ jobs:
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
-          password: ${{ env.GITHUB_TOKEN }}
+          password: ${{ env.GH_TOKEN }}
 
       - name: Docker Scout Quickview
         uses: docker/scout-action@v1
