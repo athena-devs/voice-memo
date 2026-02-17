@@ -126,7 +126,7 @@ jobs:
     if: success()
     runs-on: ubuntu-latest
     permissions:
-      content: read
+      contents: read
       pull-requests: write
 
     steps:
