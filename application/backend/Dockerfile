@@ -1,4 +1,4 @@
-FROM cgr.dev/chainguard/node AS build
+FROM cgr.dev/chainguard/node:latest AS build
 
 WORKDIR /build
 
@@ -17,7 +17,7 @@ RUN npm run build
 RUN npm ci --omit=dev && npm cache clean --force
 
 
-FROM gcr.io/distroless/nodejs24-debian12
+FROM gcr.io/distroless/nodejs24-debian12:latest
 
 WORKDIR /app
 
