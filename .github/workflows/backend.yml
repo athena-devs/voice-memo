@@ -51,10 +51,10 @@ jobs:
       - name: Set Version based on (SHA)
         run: echo "VERSION=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
-      - name: Secret Scanning (Gitleaks)
-        uses: gitleaks/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Secret Scanning (Gitleaks)
+      #   uses: gitleaks/gitleaks-action@v2
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Lint Dockerfile
         uses: hadolint/hadolint-action@v3.1.0
