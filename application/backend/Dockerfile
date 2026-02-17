@@ -1,3 +1,4 @@
+# hadolint ignore=DL3007
 FROM cgr.dev/chainguard/node:latest AS build
 
 WORKDIR /build
@@ -17,7 +18,7 @@ RUN npm run build
 RUN npm ci --omit=dev && npm cache clean --force
 
 
-FROM gcr.io/distroless/nodejs24-debian12:latest
+FROM gcr.io/distroless/nodejs24-debian13:latest
 
 WORKDIR /app
 
