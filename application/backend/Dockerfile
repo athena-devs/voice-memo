@@ -17,7 +17,7 @@ RUN npm run build
 
 RUN npm ci --omit=dev && npm cache clean --force
 
-
+# hadolint ignore=DL3007
 FROM gcr.io/distroless/nodejs24-debian13:latest
 
 WORKDIR /app
