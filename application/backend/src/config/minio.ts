@@ -8,6 +8,7 @@ import * as Minio from 'minio'
 export class MinioClient {
   private readonly client: Minio.Client;
   private readonly bucketName = "voice-memo-storage"
+  private readonly externalHost = env.MINIO_EXTERNAL_HOST
 
   constructor() {
     this.client = new Minio.Client({
@@ -87,12 +88,30 @@ export class MinioClient {
   async getAudioUrl(fileKey: string, expirySeconds: number = 3600) {
     try {
         // Generates Url
-        const url = await this.client.presignedGetObject(
+        const internalUrl = await this.client.presignedGetObject(
             this.bucketName, 
             fileKey, 
             expirySeconds
         );
-        return url;
+
+        if (this.externalHost) {
+          const urlObj = new URL(internalUrl)
+
+          if (this.externalHost.startsWith("https")) {
+            // Gets protocol, host and url from https
+            const externalObj = new URL(this.externalHost)
+            urlObj.protocol = externalObj.protocol
+            urlObj.host = externalObj.host
+            urlObj.port = externalObj.port
+          } else {
+            // Returns domain
+            urlObj.host = this.externalHost;
+          }
+
+          return urlObj.toString()
+        }
+
+        return internalUrl;
       } catch (err) {
       logger.error("Error generating a url for a file on MinIO", err);
       throw new AppError(`An error ocurried trying generate a url for a file on storage: ${err}`, 500)
