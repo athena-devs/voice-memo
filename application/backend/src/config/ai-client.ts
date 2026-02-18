@@ -30,7 +30,7 @@ export class AIClient {
             }
 
             // Generate a file to AI api
-            const outputFile = await toFile(buffer, 'audio-file.mp3');
+            const outputFile = await toFile(buffer, 'audio-file.mp3', {type: 'audio/mpeg'});
 
             const rawTranscription = await this.groq.audio.transcriptions.create({
                 file: outputFile,
@@ -91,9 +91,8 @@ export class AIClient {
                 parsedContent = JSON.parse(jsonContent)
             } catch(err: any) {
                 console.error("Failed to parse AI JSON response:", jsonContent);
-                // Fallback seguro se o JSON quebrar
                 parsedContent = {
-                    title: "Resumo do Áudio",
+                    title: "Audio Summary",
                     summary_md: rawText,
                     action_items: []
                 };
