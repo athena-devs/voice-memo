@@ -8,3 +8,4 @@ uploads
 dist/
 backend.http
 teste.mp3
+prisma/generated

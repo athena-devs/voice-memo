@@ -1,4 +1,4 @@
-import { prisma } from "@config/prisma";
+import { prisma } from "@config/prisma.client";
 import { MemosRepository } from "@services/memo-services/repositories";
 import { IMemo, IMemoUpdate } from "@models/memo";
 
