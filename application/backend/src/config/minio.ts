@@ -7,6 +7,7 @@ import * as Minio from 'minio'
 
 export class MinioClient {
   private readonly client: Minio.Client;
+  private readonly publicClient: Minio.Client;
   private readonly bucketName = "voice-memo-storage"
   private readonly externalHost = env.MINIO_EXTERNAL_HOST
 
@@ -15,6 +16,15 @@ export class MinioClient {
       endPoint: env.MINIO_HOST,
       port: env.MINIO_PORT,
       useSSL: false,
+      accessKey: env.MINIO_ACCESS_KEY,
+      secretKey: env.MINIO_SECRET_KEY,
+    })
+
+    const extUrl = new URL(this.externalHost || "http://localhost:9000");
+    this.publicClient = new Minio.Client({
+      endPoint: extUrl.hostname,
+      port: extUrl.port ? parseInt(extUrl.port) : (extUrl.protocol === 'https:' ? 443 : 80),
+      useSSL: extUrl.protocol === 'https:',
       accessKey: env.MINIO_ACCESS_KEY,
       secretKey: env.MINIO_SECRET_KEY,
     })
@@ -87,31 +97,13 @@ export class MinioClient {
 
   async getAudioUrl(fileKey: string, expirySeconds: number = 3600) {
     try {
-        // Generates Url
-        const internalUrl = await this.client.presignedGetObject(
+        const url = await this.publicClient.presignedGetObject(
             this.bucketName, 
             fileKey, 
             expirySeconds
         );
 
-        if (this.externalHost) {
-          const urlObj = new URL(internalUrl)
-
-          if (this.externalHost.startsWith("https")) {
-            // Gets protocol, host and url from https
-            const externalObj = new URL(this.externalHost)
-            urlObj.protocol = externalObj.protocol
-            urlObj.host = externalObj.host
-            urlObj.port = externalObj.port
-          } else {
-            // Returns domain
-            urlObj.host = this.externalHost;
-          }
-
-          return urlObj.toString()
-        }
-
-        return internalUrl;
+        return url;
       } catch (err) {
       logger.error("Error generating a url for a file on MinIO", err);
       throw new AppError(`An error ocurried trying generate a url for a file on storage: ${err}`, 500)
