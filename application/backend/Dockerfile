@@ -3,15 +3,15 @@ FROM cgr.dev/chainguard/node:latest AS build
 
 WORKDIR /build
 
-COPY package.json package-lock.json ./
+COPY --chown=node:node package.json package-lock.json ./
 
 RUN npm ci
 
-COPY prisma ./prisma
+COPY --chown=node:node prisma ./prisma
 
 RUN npx prisma generate
 
-COPY . .
+COPY --chown=node:node . .
 
 RUN npm run build
 
