@@ -25,6 +25,7 @@ services:
     command: server /data --console-address ":9001"
     networks:
       - node-app
+      - global-net
     volumes:
       - minio-data:/data
   openobserve:
