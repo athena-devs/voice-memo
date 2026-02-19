@@ -5,6 +5,7 @@ import { appRouter } from './routes/index'
 import { errorHandler } from '@middlewares/error-handler'
 import { MemosWorker } from "@workers/memos-worker";
 import { rateLimiter } from "@middlewares/rate-limiter";
+import { notFound } from '@middlewares/not-found'
 
 const worker = new MemosWorker()
 const app = express()
@@ -17,5 +18,6 @@ app.use(cors({
 }));
 app.use(appRouter)
 app.use(errorHandler)
+app.use(notFound)
 
 export { app, worker }
