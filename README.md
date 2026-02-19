@@ -114,5 +114,5 @@ The following routes are currently implemented and available in the application:
 * \[x\] Authentication (JWT + Google OAuth + Password Recovery)  
 * \[x\] CI/CD Pipelines & Security Scans (GitHub Actions)
 * \[x\] Network Security (Cloudflare Tunnels, see [here](https://github.com/athena-devs/infra)) 
-* \[ \] Frontend Interface (In Progress)  
 * \[ \] Unit & Integration Tests (Next Step)
+* \[ \] Small adjustments  
