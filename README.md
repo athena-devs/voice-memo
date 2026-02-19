@@ -56,7 +56,7 @@ flowchart LR
 * **Memo Management:** Complete CRUD operations for voice notes.
 * **Asynchronous AI Processing:** Audio uploads are quickly acknowledged by the API and delegated to a Redis queue. A dedicated Worker handles the heavy AI processing without blocking the main thread.
 * **AI Insight Extraction:** Beyond transcription, the system uses Llama-3 to automatically generate titles, summaries, and structured JSON representations of the audio content.
-* **Secure Presigned URLs:** Files are protected in MinIO. The API generates temporary, cryptographically signed URLs for uploads and downloads, protecting the storage layer.
+* **Secure Presigned URLs:** Files are protected in MinIO. The API generates temporary, cryptographically signed URLs for downloads, protecting the storage layer.
 * **Resilient Infrastructure:** Zero-downtime capable structure utilizing multi-stage Docker builds and strict network isolation.
 
 ## **🏗️ Infrastructure Services**
