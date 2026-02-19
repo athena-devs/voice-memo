@@ -97,6 +97,14 @@ export class MinioClient {
     }
   }
 
+  async deleteFile(fileKey: string) {
+    try {
+      await this.client.removeObject(this.bucketName, fileKey);
+    } catch (err) {
+      logger.error("Error deleting file from MinIO", err);
+    }
+  }
+
   async getAudioUrl(fileKey: string, expirySeconds: number = 3600) {
     try {
         const url = await this.publicClient.presignedGetObject(
