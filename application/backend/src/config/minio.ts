@@ -18,6 +18,7 @@ export class MinioClient {
       useSSL: false,
       accessKey: env.MINIO_ACCESS_KEY,
       secretKey: env.MINIO_SECRET_KEY,
+      region: "sa-east-1"
     })
 
     const extUrl = new URL(this.externalHost || "http://localhost:9000");
@@ -27,6 +28,7 @@ export class MinioClient {
       useSSL: extUrl.protocol === 'https:',
       accessKey: env.MINIO_ACCESS_KEY,
       secretKey: env.MINIO_SECRET_KEY,
+      region: "sa-east-1"
     })
   }
 
