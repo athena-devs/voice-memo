@@ -1,5 +1,6 @@
 import { MemoController } from "@controllers/memo-controller";
 import { auth } from "@middlewares/auth";
+import { rateLimiter } from "@middlewares/rate-limiter";
 import { tryCatch } from "@middlewares/try-catch";
 import { Router } from "express";
 import multer from 'multer';
@@ -10,7 +11,7 @@ export const memoRoutes = Router()
 
 memoRoutes.use(auth)
 
-.post('/', upload.single('audio'), tryCatch(memo.createMemo))
+.post('/', rateLimiter.upload, upload.single('audio'), tryCatch(memo.createMemo))
 .get('/', tryCatch(memo.getAllMemos))
 .get('/:id', tryCatch(memo.getMemo))
 .patch('/:id', tryCatch(memo.updateMemo))
