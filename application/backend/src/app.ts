@@ -8,12 +8,13 @@ import { rateLimiter } from "@middlewares/rate-limiter";
 
 const worker = new MemosWorker()
 const app = express()
+app.set('trust proxy', 1);
+app.use(rateLimiter.global)
 app.use(express.json())
 app.use(cors({
     origin: env.CORS_ORIGIN,
     credentials: true
 }));
-app.use(rateLimiter.global)
 app.use(appRouter)
 app.use(errorHandler)
 
