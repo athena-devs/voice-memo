@@ -35,7 +35,7 @@
     "jsonwebtoken": "^9.0.3",
     "minio": "^8.0.7",
     "multer": "^2.2.0",
-    "nodemailer": "^8.0.8",
+    "nodemailer": "^8.0.9",
     "prisma": "^7.6.0",
     "rate-limit-redis": "^4.3.1",
     "tslog": "^4.10.2",
